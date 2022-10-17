@@ -7,3 +7,6 @@ vin32
 *.dylib
 *.dll
 vls.log
+
+# Test directory that contains executable examples
+test
