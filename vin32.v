@@ -17,7 +17,8 @@ fn main()
 		exe_path := os.args[0]
 		exe_contents := os.read_file(exe_path) or {
 			println_error("The contents of the exe couldn't read!")
-			exit(1)
+			vin32_exit(1)
+			return
 		}
 
 		if exe_contents[0..2] == "MZ"
@@ -28,5 +29,7 @@ fn main()
 		{
 			println_debug("MZ signature not found!")
 		}
+
+		vin32_exit(0)
 	}
 }
