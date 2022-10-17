@@ -4,10 +4,7 @@ import os
 
 fn main()
 {
-	$if debug
-	{
-		println_debug(os.args.str())
-	}
+	println_debug(os.args.str())
 
 	if os.args.len != 2
 	{
@@ -16,18 +13,20 @@ fn main()
 	else
 	{
 		println("Running Vin32...")  // Under construction!!!
+
 		exe_path := os.args[0]
 		exe_contents := os.read_file(exe_path) or {
-			return
+			println_error("The contents of the exe couldn't read!")
+			exit(1)
 		}
 
 		if exe_contents[0..2] == "MZ"
 		{
-			println("MZ signature found!!!")
+			println_debug("MZ signature found!")
 		}
 		else
 		{
-			println("MZ signature not found!!!")
+			println_debug("MZ signature not found!")
 		}
 	}
 }
