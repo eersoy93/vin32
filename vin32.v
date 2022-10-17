@@ -2,7 +2,8 @@ module main
 
 import os
 
-fn main() {
+fn main()
+{
 	$if debug
 	{
 		println_debug(os.args.str())
