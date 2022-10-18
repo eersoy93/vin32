@@ -14,7 +14,7 @@ fn main()
 	{
 		println("Running Vin32...")  // Under construction!!!
 
-		exe_path := os.args[0]
+		exe_path := os.args[1]
 		exe_filename := os.file_name(exe_path)
 		exe_contents := os.read_file(exe_path) or {
 			println_error("The contents of the exe couldn't read!")
