@@ -15,20 +15,15 @@ fn main()
 		println("Running Vin32...")  // Under construction!!!
 
 		exe_path := os.args[0]
+		exe_filename := os.file_name(exe_path)
 		exe_contents := os.read_file(exe_path) or {
 			println_error("The contents of the exe couldn't read!")
 			vin32_exit(1)
 			return
 		}
 
-		if exe_contents[0..2] == "MZ"
-		{
-			println_debug("MZ signature found!")
-		}
-		else
-		{
-			println_debug("MZ signature not found!")
-		}
+		println_debug("Parsing ${exe_filename}...")
+		parse_exe(exe_contents)
 
 		vin32_exit(0)
 	}
