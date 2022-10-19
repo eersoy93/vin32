@@ -18,7 +18,7 @@ fn parse_exe(exe_contents string)
 	pointer_to_pe_header_bytes := exe_contents[60..64].bytes()  // 0x3C == 60
 	pe_signature_offset := pointer_to_pe_header_bytes[0]
 	pe_signature := exe_contents[(pe_signature_offset)..(pe_signature_offset+4)]
-	if pe_signature.bytes() == [u8(0x50), 0x45, 0x00, 0x00]
+	if pe_signature.bytes() == [u8(0x50), 0x45, 0x00, 0x00]  // "PE\0\0"
 	{
 		println_debug("PE signature found!")
 	}
@@ -29,7 +29,7 @@ fn parse_exe(exe_contents string)
 	}
 
 	// Check EXE Machine Type
-	if exe_contents[220..222].bytes() == [u8(0x4C), 0x01]  // If machine type is Intel 386 and above
+	if exe_contents[220..222].bytes() == [u8(0x4C), 0x01]  // If machine type is Intel 386 and above (0x14c)
 	{
 		println_debug("Machine type is correct!")
 	}
