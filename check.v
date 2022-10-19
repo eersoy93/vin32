@@ -1,7 +1,7 @@
 module main
 
 // For 32-bit PE exe files only currently
-fn parse_exe(exe_contents string)
+fn check_exe(exe_contents string)
 {
 	// Check MZ signature
 	if exe_contents[0..2].bytes() == [u8(0x4D), 0x5A]  // 4D 5A == "MZ"
@@ -28,14 +28,26 @@ fn parse_exe(exe_contents string)
 		vin32_exit(1)
 	}
 
-	// Check EXE Machine Type
+	// Check EXE machine type
 	if exe_contents[220..222].bytes() == [u8(0x4C), 0x01]  // If machine type is Intel 386 and above (0x14c)
 	{
-		println_debug("Machine type is correct!")
+		println_debug("EXE machine type is correct!")
 	}
 	else
 	{
-		println_error("Machine type is incorrect!")
+		println_error("EXE machine type is incorrect!")
+		vin32_exit(1)
+	}
+
+	// Check whether image is executable
+	exe_characteristics := exe_contents[238..240].bytes()
+	if exe_characteristics[0] & u8(0x02) != 0  // If exe has executable characteristics
+	{
+		println_debug("EXE image is executable!")
+	}
+	else
+	{
+		println_error("EXE image is not executable!")
 		vin32_exit(1)
 	}
 
