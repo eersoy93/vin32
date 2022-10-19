@@ -1,10 +1,12 @@
 module main
 
+import term
+
 fn println_debug(msg string)
 {
 	$if debug
 	{
-		eprintln("DEBUG: $msg")
+		eprintln(term.bright_magenta("DEBUG:") + " $msg")
 	}
 	$else
 	{
@@ -14,7 +16,7 @@ fn println_debug(msg string)
 
 fn println_error(msg string)
 {
-	eprintln("ERROR: $msg")
+	eprintln(term.bright_red("ERROR:") + " $msg")
 }
 
 fn vin32_exit(exitcode int)
