@@ -28,4 +28,15 @@ fn parse_exe(exe_contents string)
 		vin32_exit(1)
 	}
 
+	// Check EXE Machine Type
+	if exe_contents[220..222].bytes() == [u8(0x4C), 0x01]  // If machine type is Intel 386 and above
+	{
+		println_debug("Machine type is correct!")
+	}
+	else
+	{
+		println_error("Machine type is incorrect!")
+		vin32_exit(1)
+	}
+
 }
