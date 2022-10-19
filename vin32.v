@@ -8,6 +8,7 @@ fn main()
 
 	if os.args.len != 2
 	{
+		println_error("Wrong command-line usage!")
 		println("Usage: vin32.exe <your executable file>")
 	}
 	else
