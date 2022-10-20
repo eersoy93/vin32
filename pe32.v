@@ -4,7 +4,7 @@ module main
 
 struct PE32DOSHeader
 {
-	magic_number                     u16  // "MZ"
+	magic_number                     u16 = "MZ"
 	last_page_of_file_bytes          u16
 	pages_in_file                    u16
 	relocations                      u16
