@@ -15,7 +15,7 @@ struct PE32DOSHeader
 	checksum                         u16
 	initial_ip_value                 u16
 	initial_relative_cs_value        u16
-	relocation_table_file_addr       u16
+	relocation_table_file_address    u16
 	overlay_number                   u16
 	reserved_words                [4]u16
 	oem_identifier                   u16
@@ -82,4 +82,18 @@ struct PE32OptionalHeader
 	import_address_table       u32
 	delay_import_descriptor    u32
 	clr_runtime_header         u32
+}
+
+struct SectionHeader
+{
+	name                   u64
+	virtual_size           u32
+	virtual_address        u32
+	sizeof_raw_data        u32
+	ptr_to_raw_data        u32
+	ptr_to_relocations     u32
+	ptr_to_line_numbers    u32
+	number_of_relocations  u16
+	number_of_line_numbers u16
+	charactersitics        u32
 }
