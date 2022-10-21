@@ -2,9 +2,11 @@ module main
 
 // PE32 structs and other data structures
 
+const magic_number = "MZ"
+
 struct PE32DOSHeader
 {
-	magic_number                     u16 = "MZ"
+	magic_number                     u16
 	last_page_of_file_bytes          u16
 	pages_in_file                    u16
 	relocations                      u16
@@ -95,5 +97,5 @@ struct SectionHeader
 	ptr_to_line_numbers    u32
 	number_of_relocations  u16
 	number_of_line_numbers u16
-	charactersitics        u32
+	characteristics        u32
 }
