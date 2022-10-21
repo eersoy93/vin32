@@ -102,9 +102,3 @@ struct PE32
 		characteristics        u32
 	}
 }
-
-
-
-
-
-
