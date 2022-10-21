@@ -1,7 +1,7 @@
 module main
 
 // For 32-bit PE exe files only currently
-fn check_exe(exe_contents string)
+fn parse_exe(exe_contents string)
 {
 	// Check MZ signature
 	if exe_contents[0..2].bytes() == [u8(0x4D), 0x5A]  // 4D 5A == "MZ"

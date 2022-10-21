@@ -24,7 +24,7 @@ fn main()
 		}
 
 		println_debug("Parsing ${exe_filename}...")
-		check_exe(exe_contents)
+		parse_exe(exe_contents)
 
 		vin32_exit(0)
 	}
