@@ -13,7 +13,7 @@ fn main()
 	}
 	else
 	{
-		println("Running Vin32...")  // Under construction!!!
+		println_information("Running Vin32...")  // Under construction!!!
 
 		exe_path := os.args[1]
 		exe_filename := os.file_name(exe_path)

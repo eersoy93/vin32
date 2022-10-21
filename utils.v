@@ -6,7 +6,7 @@ fn println_debug(msg string)
 {
 	$if debug
 	{
-		eprintln(term.bright_magenta("DEBUG:") + " $msg")
+		eprintln(term.bright_cyan("DEBUG:") + " $msg")
 	}
 	$else
 	{
@@ -17,6 +17,16 @@ fn println_debug(msg string)
 fn println_error(msg string)
 {
 	eprintln(term.bright_red("ERROR:") + " $msg")
+}
+
+fn println_information(msg string)
+{
+	println(term.bright_green("INFO:") + " $msg")
+}
+
+fn println_warning(msg string)
+{
+	eprintln(term.bright_yellow("WARNING:") + " $msg")
 }
 
 fn vin32_exit(exitcode int)
