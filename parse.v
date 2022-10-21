@@ -14,6 +14,7 @@ fn parse_exe(exe_contents string)
 		pe32_file_header: struct
 		{
 			machine_type: u16(exe_contents[220..222].bytes().reverse().hex().parse_uint(16, 0) or { return })
+			characteristics: u16(exe_contents[238..240].bytes().reverse().hex().parse_uint(16, 0) or { return })
 		}
 	}
 
@@ -43,23 +44,22 @@ fn parse_exe(exe_contents string)
 	// Check EXE machine type
 	if pe32.pe32_file_header.machine_type == pe32_machine_type_i386
 	{
-		println_debug("EXE machine type is correct!")
+		println_debug("The EXE machine type is correct!")
 	}
 	else
 	{
-		println_error("EXE machine type is incorrect!")
+		println_error("The EXE machine type is incorrect!")
 		vin32_exit(1)
 	}
 
-	// Check whether image is executable
-	exe_characteristics := exe_contents[238..240].bytes()
-	if exe_characteristics[0] & u8(0x02) != 0  // If exe has executable characteristics
+	// Check whether image has executable characteristic
+	if pe32.pe32_file_header.characteristics & u16(0x02) != 0
 	{
-		println_debug("EXE image is executable!")
+		println_debug("The EXE image is executable!")
 	}
 	else
 	{
-		println_error("EXE image is not executable!")
+		println_error("The EXE image is not executable!")
 		vin32_exit(1)
 	}
 
