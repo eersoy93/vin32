@@ -4,8 +4,8 @@ module main
 
 const
 (
-	magic_number = [u8(0x4D), 0x5A]                   // "MZ"
-	pe32_nt_signature = [u8(0x50), 0x45, 0x00, 0x00]  // "PE\0\0"
+	magic_number = 0x4D5A                             // "MZ"
+	pe32_nt_signature = 0x50450000                    // "PE\0\0"
 )
 
 struct PE32

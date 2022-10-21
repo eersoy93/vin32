@@ -3,8 +3,18 @@ module main
 // For 32-bit PE exe files only currently
 fn parse_exe(exe_contents string)
 {
+	// Classify EXE contents to PE32 struct
+	pe32 := PE32
+	{
+		pe32_dos_header: struct
+		{
+			magic_number: u16(exe_contents[0..2].bytes().hex().parse_uint(16, 0) or { return })
+			pointer_to_pe_header: u16(exe_contents[60..64].bytes().hex().parse_uint(16, 0) or { return })
+		}
+	}
+
 	// Check MZ signature
-	if exe_contents[0..2].bytes() == [u8(0x4D), 0x5A]  // 4D 5A == "MZ"
+	if pe32.pe32_dos_header.magic_number == magic_number
 	{
 		println_debug("MZ signature found!")
 	}
