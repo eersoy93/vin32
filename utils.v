@@ -31,6 +31,6 @@ fn println_warning(msg string)
 
 fn vin32_exit(exitcode int)
 {
-	println("Exiting with ${exitcode} code...")
+	println_information("Exiting with ${exitcode} code...")
 	exit(exitcode)
 }
