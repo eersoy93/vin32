@@ -4,8 +4,9 @@ module main
 
 const
 (
-	magic_number = 0x4D5A                             // "MZ"
-	pe32_nt_signature = 0x50450000                    // "PE\0\0"
+	pe32_magic_number = 0x4D5A                             // "MZ"
+	pe32_nt_signature = 0x50450000                         // "PE\0\0"
+	pe32_machine_type_i386 = 0x14c                         // IMAGE_FILE_MACHINE_I386
 )
 
 struct PE32
@@ -31,7 +32,6 @@ struct PE32
 		reserved_words_2             [10]u16
 		pointer_to_pe_header             u16
 	}
-	pe32_nt_signature [4]u8
 	pe32_file_header struct
 	{
 		machine_type         u16
