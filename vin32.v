@@ -23,8 +23,10 @@ fn main()
 			return
 		}
 
-		println_debug("Parsing ${exe_filename}...")
-		parse_exe(exe_contents)
+		println_debug("Running ${exe_filename}...")
+
+		exe_result := run_exe(exe_contents)
+		println_information("${exe_filename} returns ${exe_result} value!")
 
 		vin32_exit(0)
 	}
