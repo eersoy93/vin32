@@ -7,25 +7,41 @@ fn parse_exe(exe_contents string)
 
 	pe32_dos_header := PE32_DOS_HEADER
 	{
-		magic_number:                  u16(exe_contents[0..2].bytes().hex().parse_uint(16, 0) or { return })
-		last_page_of_file_bytes:       u16(exe_contents[2..4].bytes().hex().parse_uint(16, 0) or { return })
-		pages_in_file:                 u16(exe_contents[4..6].bytes().hex().parse_uint(16, 0) or { return })
-		relocations:                   u16(exe_contents[6..8].bytes().hex().parse_uint(16, 0) or { return })
-		size_of_header_in_paragraphs:  u16(exe_contents[8..10].bytes().hex().parse_uint(16, 0) or { return })
-		extra_paragraphs_needed_min:   u16(exe_contents[10..12].bytes().hex().parse_uint(16, 0) or { return })
-		extra_paragraphs_needed_max:   u16(exe_contents[12..14].bytes().hex().parse_uint(16, 0) or { return })
-		initial_relative_ss_value:     u16(exe_contents[14..16].bytes().hex().parse_uint(16, 0) or { return })
-		initial_sp_value:              u16(exe_contents[16..18].bytes().hex().parse_uint(16, 0) or { return })
-		checksum:                      u16(exe_contents[18..20].bytes().hex().parse_uint(16, 0) or { return })
-		initial_ip_value:              u16(exe_contents[20..22].bytes().hex().parse_uint(16, 0) or { return })
-		initial_relative_cs_value:     u16(exe_contents[22..24].bytes().hex().parse_uint(16, 0) or { return })
-		relocation_table_file_address: u16(exe_contents[24..26].bytes().hex().parse_uint(16, 0) or { return })
-		overlay_number:                u16(exe_contents[26..28].bytes().hex().parse_uint(16, 0) or { return })
-		reserved_words:                [4]u16{init: 0}  // I couldn't assign valued array to this because V wants [4]u16, not []u16.
-		oem_identifier:                u16(exe_contents[36..38].bytes().hex().parse_uint(16, 0) or { return })
-		oem_information:               u16(exe_contents[38..40].bytes().hex().parse_uint(16, 0) or { return })
-		reserved_words_2:              [10]u16{init: 0}  // I couldn't assign valued array to this because V wants [4]u16, not []u16.
-		pointer_to_pe_header:          u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { return })
+		magic_number:                   u16(exe_contents[0..2].bytes().hex().parse_uint(16, 0) or { return })
+		last_page_of_file_bytes:        u16(exe_contents[2..4].bytes().hex().parse_uint(16, 0) or { return })
+		pages_in_file:                  u16(exe_contents[4..6].bytes().hex().parse_uint(16, 0) or { return })
+		relocations:                    u16(exe_contents[6..8].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_header_in_paragraphs:   u16(exe_contents[8..10].bytes().hex().parse_uint(16, 0) or { return })
+		extra_paragraphs_needed_min:    u16(exe_contents[10..12].bytes().hex().parse_uint(16, 0) or { return })
+		extra_paragraphs_needed_max:    u16(exe_contents[12..14].bytes().hex().parse_uint(16, 0) or { return })
+		initial_relative_ss_value:      u16(exe_contents[14..16].bytes().hex().parse_uint(16, 0) or { return })
+		initial_sp_value:               u16(exe_contents[16..18].bytes().hex().parse_uint(16, 0) or { return })
+		checksum:                       u16(exe_contents[18..20].bytes().hex().parse_uint(16, 0) or { return })
+		initial_ip_value:               u16(exe_contents[20..22].bytes().hex().parse_uint(16, 0) or { return })
+		initial_relative_cs_value:      u16(exe_contents[22..24].bytes().hex().parse_uint(16, 0) or { return })
+		relocation_table_file_address:  u16(exe_contents[24..26].bytes().hex().parse_uint(16, 0) or { return })
+		overlay_number:                 u16(exe_contents[26..28].bytes().hex().parse_uint(16, 0) or { return })
+		reserved_words:                 [
+		                                u16(exe_contents[28..30].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[30..32].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[32..34].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[34..36].bytes().hex().parse_uint(16, 0) or { return })
+		                                ]!
+		oem_identifier:                 u16(exe_contents[36..38].bytes().hex().parse_uint(16, 0) or { return })
+		oem_information:                u16(exe_contents[38..40].bytes().hex().parse_uint(16, 0) or { return })
+		reserved_words_2:               [
+		                                u16(exe_contents[40..42].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[42..44].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[44..46].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[46..48].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[48..50].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[50..52].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[52..54].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[54..56].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[56..58].bytes().hex().parse_uint(16, 0) or { return }),
+		                                u16(exe_contents[58..60].bytes().hex().parse_uint(16, 0) or { return })
+		                                ]!
+		pointer_to_pe_header:           u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { return })
 	}
 
 	x := pe32_dos_header.pointer_to_pe_header
