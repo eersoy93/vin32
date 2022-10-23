@@ -60,7 +60,7 @@ fn parse_exe(exe_contents string)
 
 	pe32_optional_header := PE32_OPTIONAL_HEADER
 	{
-		magic:                      u16(exe_contents[(x + 24)..(x + 26)].bytes().hex().parse_uint(16, 0) or { return })
+		magic:                      u16(exe_contents[(x + 24)..(x + 26)].bytes().reverse().hex().parse_uint(16, 0) or { return })
 		linker_version_major:       u8(exe_contents[(x + 26)..(x + 27)].bytes().hex().parse_uint(16, 0) or { return })
 		linker_version_minor:       u8(exe_contents[(x + 27)..(x + 28)].bytes().hex().parse_uint(16, 0) or { return })
 		code_size:                  u32(exe_contents[(x + 28)..(x + 32)].bytes().hex().parse_uint(16, 0) or { return })
@@ -160,6 +160,17 @@ fn parse_exe(exe_contents string)
 	else
 	{
 		println_error("The EXE image is not executable!")
+		vin32_exit(1)
+	}
+
+	// Check whether image is PE32 image, not PE32+ or other
+	if pe32_optional_header.magic == pe32_optional_magic
+	{
+		println_debug("The EXE image is PE32 (NT32) image!")
+	}
+	else
+	{
+		println_error("The EXE image is not PE32 (NT32) image!")
 		vin32_exit(1)
 	}
 }

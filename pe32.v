@@ -7,6 +7,7 @@ const
 	pe32_magic_number = 0x4D5A                             // "MZ"
 	pe32_nt_signature = 0x50450000                         // "PE\0\0"
 	pe32_machine_type_i386 = 0x14c                         // IMAGE_FILE_MACHINE_I386
+	pe32_optional_magic = 0x010b                           // PE32 (NT32)
 )
 
 struct PE32_DOS_HEADER
