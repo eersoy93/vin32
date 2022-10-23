@@ -9,6 +9,26 @@ fn parse_exe(exe_contents string)
 		pe32_dos_header: struct
 		{
 			magic_number: u16(exe_contents[0..2].bytes().hex().parse_uint(16, 0) or { return })
+			last_page_of_file_bytes: u16(exe_contents[2..4].bytes().hex().parse_uint(16, 0) or { return })
+			pages_in_file: u16(exe_contents[4..6].bytes().hex().parse_uint(16, 0) or { return })
+			relocations: u16(exe_contents[6..8].bytes().hex().parse_uint(16, 0) or { return })
+			size_of_header_in_paragraphs: u16(exe_contents[8..10].bytes().hex().parse_uint(16, 0) or { return })
+			extra_paragraphs_needed_min: u16(exe_contents[10..12].bytes().hex().parse_uint(16, 0) or { return })
+			extra_paragraphs_needed_max: u16(exe_contents[12..14].bytes().hex().parse_uint(16, 0) or { return })
+			initial_relative_ss_value: u16(exe_contents[14..16].bytes().hex().parse_uint(16, 0) or { return })
+			initial_sp_value: u16(exe_contents[16..18].bytes().hex().parse_uint(16, 0) or { return })
+			checksum: u16(exe_contents[18..20].bytes().hex().parse_uint(16, 0) or { return })
+			initial_ip_value: u16(exe_contents[20..22].bytes().hex().parse_uint(16, 0) or { return })
+			initial_relative_cs_value: u16(exe_contents[22..24].bytes().hex().parse_uint(16, 0) or { return })
+			relocation_table_file_address: u16(exe_contents[24..26].bytes().hex().parse_uint(16, 0) or { return })
+			overlay_number: u16(exe_contents[26..28].bytes().hex().parse_uint(16, 0) or { return })
+			// reserved_words:
+			// [
+			// 	u16(exe_contents[28..30].bytes().hex().parse_uint(16, 0) or { return }),
+			// 	u16(exe_contents[30..32].bytes().hex().parse_uint(16, 0) or { return }),
+			// 	u16(exe_contents[32..34].bytes().hex().parse_uint(16, 0) or { return }),
+			// 	u16(exe_contents[34..36].bytes().hex().parse_uint(16, 0) or { return })
+			// ]
 			pointer_to_pe_header: u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { return })
 		}
 		pe32_file_header: struct

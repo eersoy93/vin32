@@ -20,6 +20,7 @@ struct PE32
 		size_of_header_in_paragraphs     u16
 		extra_paragraphs_needed_min      u16
 		extra_paragraphs_needed_max      u16
+		initial_relative_ss_value        u16
 		initial_sp_value                 u16
 		checksum                         u16
 		initial_ip_value                 u16
