@@ -27,6 +27,67 @@ fn parse_exe(exe_contents string)
 		pointer_to_pe_header:          u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { return })
 	}
 
+	x := pe32_dos_header.pointer_to_pe_header
+
+	pe32_file_header := PE32_FILE_HEADER
+	{
+		nt_signature:            u32(exe_contents[x..(x + 4)].bytes().hex().parse_uint(16, 0) or { return })
+		machine_type:            u16(exe_contents[(x + 4)..(x + 6)].bytes().reverse().hex().parse_uint(16, 0) or { return })
+		sections_count:          u16(exe_contents[(x + 6)..(x + 8)].bytes().hex().parse_uint(16, 0) or { return })
+		time_date_stamp:         u32(exe_contents[(x + 8)..(x + 12)].bytes().hex().parse_uint(16, 0) or { return })
+		symbol_table_pointer:    u32(exe_contents[(x + 12)..(x + 16)].bytes().hex().parse_uint(16, 0) or { return })
+		number_of_symbols:       u32(exe_contents[(x + 16)..(x + 20)].bytes().hex().parse_uint(16, 0) or { return })
+		optional_header_size:    u16(exe_contents[(x + 20)..(x + 22)].bytes().hex().parse_uint(16, 0) or { return })
+		characteristics:         u16(exe_contents[(x + 22)..(x + 24)].bytes().reverse().hex().parse_uint(16, 0) or { return })
+	}
+
+	pe32_optional_header := PE32_OPTIONAL_HEADER
+	{
+		magic:                      u16(exe_contents[(x + 24)..(x + 26)].bytes().hex().parse_uint(16, 0) or { return })
+		linker_version_major:       u8(exe_contents[(x + 26)..(x + 27)].bytes().hex().parse_uint(16, 0) or { return })
+		linker_version_minor:       u8(exe_contents[(x + 27)..(x + 28)].bytes().hex().parse_uint(16, 0) or { return })
+		code_size:                  u32(exe_contents[(x + 28)..(x + 32)].bytes().hex().parse_uint(16, 0) or { return })
+		initialized_data_size:      u32(exe_contents[(x + 32)..(x + 36)].bytes().hex().parse_uint(16, 0) or { return })
+		uninitialized_data_size:    u32(exe_contents[(x + 36)..(x + 40)].bytes().hex().parse_uint(16, 0) or { return })
+		entry_point:                u32(exe_contents[(x + 40)..(x + 44)].bytes().hex().parse_uint(16, 0) or { return })
+		base_of_code:               u32(exe_contents[(x + 44)..(x + 48)].bytes().hex().parse_uint(16, 0) or { return })
+		base_of_data:               u32(exe_contents[(x + 48)..(x + 52)].bytes().hex().parse_uint(16, 0) or { return })
+		image_size:                 u32(exe_contents[(x + 52)..(x + 56)].bytes().hex().parse_uint(16, 0) or { return })
+		section_alignment:          u32(exe_contents[(x + 56)..(x + 60)].bytes().hex().parse_uint(16, 0) or { return })
+		file_alignment:             u32(exe_contents[(x + 60)..(x + 64)].bytes().hex().parse_uint(16, 0) or { return })
+		os_version_major:           u16(exe_contents[(x + 64)..(x + 66)].bytes().hex().parse_uint(16, 0) or { return })
+		os_version_minor:           u16(exe_contents[(x + 66)..(x + 68)].bytes().hex().parse_uint(16, 0) or { return })
+		subsystem_version_major:    u16(exe_contents[(x + 68)..(x + 70)].bytes().hex().parse_uint(16, 0) or { return })
+		subsystem_version_minor:    u16(exe_contents[(x + 70)..(x + 72)].bytes().hex().parse_uint(16, 0) or { return })
+		win32_version_value:        u16(exe_contents[(x + 72)..(x + 74)].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_image:              u32(exe_contents[(x + 74)..(x + 78)].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_headers:            u32(exe_contents[(x + 78)..(x + 82)].bytes().hex().parse_uint(16, 0) or { return })
+		checksum:                   u32(exe_contents[(x + 82)..(x + 86)].bytes().hex().parse_uint(16, 0) or { return })
+		subsystem:                  u32(exe_contents[(x + 86)..(x + 90)].bytes().hex().parse_uint(16, 0) or { return })
+		dll_characteristics:        u16(exe_contents[(x + 90)..(x + 92)].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_stack_reserve:      u32(exe_contents[(x + 92)..(x + 96)].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_stack_commit:       u32(exe_contents[(x + 96)..(x + 100)].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_heap_reserve:       u32(exe_contents[(x + 100)..(x + 104)].bytes().hex().parse_uint(16, 0) or { return })
+		size_of_heap_commit:        u32(exe_contents[(x + 104)..(x + 108)].bytes().hex().parse_uint(16, 0) or { return })
+		loader_flags:               u32(exe_contents[(x + 108)..(x + 112)].bytes().hex().parse_uint(16, 0) or { return })
+		rvas_and_sizes_number:      u32(exe_contents[(x + 112)..(x + 116)].bytes().hex().parse_uint(16, 0) or { return })
+		export_table:               u32(exe_contents[(x + 116)..(x + 120)].bytes().hex().parse_uint(16, 0) or { return })
+		import_table:               u32(exe_contents[(x + 120)..(x + 124)].bytes().hex().parse_uint(16, 0) or { return })
+		resource_table:             u32(exe_contents[(x + 124)..(x + 128)].bytes().hex().parse_uint(16, 0) or { return })
+		exception_table:            u32(exe_contents[(x + 128)..(x + 132)].bytes().hex().parse_uint(16, 0) or { return })
+		certificate_table:          u32(exe_contents[(x + 132)..(x + 136)].bytes().hex().parse_uint(16, 0) or { return })
+		base_relocation_table:      u32(exe_contents[(x + 136)..(x + 140)].bytes().hex().parse_uint(16, 0) or { return })
+		debug_table:                u32(exe_contents[(x + 140)..(x + 144)].bytes().hex().parse_uint(16, 0) or { return })
+		architecture_specific_data: u32(exe_contents[(x + 144)..(x + 148)].bytes().hex().parse_uint(16, 0) or { return })
+		rva_of_global_pointer:      u32(exe_contents[(x + 148)..(x + 152)].bytes().hex().parse_uint(16, 0) or { return })
+		tls_table:                  u32(exe_contents[(x + 152)..(x + 156)].bytes().hex().parse_uint(16, 0) or { return })
+		load_config_table:          u32(exe_contents[(x + 156)..(x + 160)].bytes().hex().parse_uint(16, 0) or { return })
+		bound_import_table:         u32(exe_contents[(x + 160)..(x + 164)].bytes().hex().parse_uint(16, 0) or { return })
+		import_address_table:       u32(exe_contents[(x + 164)..(x + 168)].bytes().hex().parse_uint(16, 0) or { return })
+		delay_import_descriptor:    u32(exe_contents[(x + 168)..(x + 172)].bytes().hex().parse_uint(16, 0) or { return })
+		clr_runtime_header:         u32(exe_contents[(x + 172)..(x + 176)].bytes().hex().parse_uint(16, 0) or { return })
+	}
+
 	// Check MZ signature
 	if pe32_dos_header.magic_number == pe32_magic_number
 	{
@@ -39,8 +100,7 @@ fn parse_exe(exe_contents string)
 	}
 
 	// Check PE signature
-	exe_nt_signature := exe_contents[(pe32_dos_header.pointer_to_pe_header)..(pe32_dos_header.pointer_to_pe_header + 4)]
-	if exe_nt_signature.bytes().hex().parse_uint(16, 32) or { return } == pe32_nt_signature
+	if pe32_file_header.nt_signature == pe32_nt_signature
 	{
 		println_debug("PE signature found!")
 	}
@@ -51,8 +111,7 @@ fn parse_exe(exe_contents string)
 	}
 
 	// Check EXE machine type
-	exe_machine_type := exe_contents[(pe32_dos_header.pointer_to_pe_header + 4)..(pe32_dos_header.pointer_to_pe_header + 6)]
-	if exe_machine_type.bytes().reverse().hex().parse_uint(16, 16) or { return } == pe32_machine_type_i386
+	if pe32_file_header.machine_type == pe32_machine_type_i386
 	{
 		println_debug("The EXE machine type is correct!")
 	}
@@ -63,8 +122,7 @@ fn parse_exe(exe_contents string)
 	}
 
 	// Check whether image has executable characteristic
-	exe_image_characteristics := exe_contents[(pe32_dos_header.pointer_to_pe_header + 22)..(pe32_dos_header.pointer_to_pe_header + 24)]
-	if exe_image_characteristics.bytes().reverse().hex().parse_uint(16, 16) or { return } & u16(0x02) != 0
+	if (pe32_file_header.characteristics & u16(0x02)) != 0
 	{
 		println_debug("The EXE image is executable!")
 	}
