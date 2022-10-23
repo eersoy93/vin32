@@ -4,6 +4,7 @@ module main
 fn parse_exe(exe_contents string)
 {
 	// Classify EXE contents to PE32_DOS_HEADER struct
+
 	pe32_dos_header := PE32_DOS_HEADER
 	{
 		magic_number:                  u16(exe_contents[0..2].bytes().hex().parse_uint(16, 0) or { return })
@@ -86,6 +87,20 @@ fn parse_exe(exe_contents string)
 		import_address_table:       u32(exe_contents[(x + 164)..(x + 168)].bytes().hex().parse_uint(16, 0) or { return })
 		delay_import_descriptor:    u32(exe_contents[(x + 168)..(x + 172)].bytes().hex().parse_uint(16, 0) or { return })
 		clr_runtime_header:         u32(exe_contents[(x + 172)..(x + 176)].bytes().hex().parse_uint(16, 0) or { return })
+	}
+
+	pe32_section_header := PE32_SECTION_HEADER
+	{
+		name:                   u64(exe_contents[(x + 176)..(x + 182)].bytes().hex().parse_uint(16, 0) or { return })
+		virtual_size:           u32(exe_contents[(x + 182)..(x + 186)].bytes().hex().parse_uint(16, 0) or { return })
+		virtual_address:        u32(exe_contents[(x + 186)..(x + 190)].bytes().hex().parse_uint(16, 0) or { return })
+		sizeof_raw_data:        u32(exe_contents[(x + 190)..(x + 194)].bytes().hex().parse_uint(16, 0) or { return })
+		ptr_to_raw_data:        u32(exe_contents[(x + 194)..(x + 198)].bytes().hex().parse_uint(16, 0) or { return })
+		ptr_to_relocations:     u32(exe_contents[(x + 198)..(x + 202)].bytes().hex().parse_uint(16, 0) or { return })
+		ptr_to_line_numbers:    u32(exe_contents[(x + 202)..(x + 206)].bytes().hex().parse_uint(16, 0) or { return })
+		number_of_relocations:  u16(exe_contents[(x + 206)..(x + 208)].bytes().hex().parse_uint(16, 0) or { return })
+		number_of_line_numbers: u16(exe_contents[(x + 208)..(x + 210)].bytes().hex().parse_uint(16, 0) or { return })
+		characteristics:        u32(exe_contents[(x + 210)..(x + 214)].bytes().hex().parse_uint(16, 0) or { return })
 	}
 
 	// Check MZ signature
