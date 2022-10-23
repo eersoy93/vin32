@@ -22,18 +22,20 @@ fn parse_exe(exe_contents string)
 			initial_relative_cs_value: u16(exe_contents[22..24].bytes().hex().parse_uint(16, 0) or { return })
 			relocation_table_file_address: u16(exe_contents[24..26].bytes().hex().parse_uint(16, 0) or { return })
 			overlay_number: u16(exe_contents[26..28].bytes().hex().parse_uint(16, 0) or { return })
-			// reserved_words:
-			// [
-			// 	u16(exe_contents[28..30].bytes().hex().parse_uint(16, 0) or { return }),
-			// 	u16(exe_contents[30..32].bytes().hex().parse_uint(16, 0) or { return }),
-			// 	u16(exe_contents[32..34].bytes().hex().parse_uint(16, 0) or { return }),
-			// 	u16(exe_contents[34..36].bytes().hex().parse_uint(16, 0) or { return })
-			// ]
+			reserved_words: [4]u16{init: 0}  // I couldn't assign valued array to this because V wants [4]u16, not []u16.
+			oem_identifier: u16(exe_contents[36..38].bytes().hex().parse_uint(16, 0) or { return })
+			oem_information: u16(exe_contents[38..40].bytes().hex().parse_uint(16, 0) or { return })
+			reserved_words_2: [10]u16{init: 0}
 			pointer_to_pe_header: u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { return })
 		}
 		pe32_file_header: struct
 		{
 			machine_type: u16(exe_contents[220..222].bytes().reverse().hex().parse_uint(16, 0) or { return })
+			sections_count: u16(exe_contents[222..224].bytes().reverse().hex().parse_uint(16, 0) or { return })
+			time_date_stamp: u32(exe_contents[224..228].bytes().reverse().hex().parse_uint(16, 0) or { return })
+			symbol_table_pointer: u32(exe_contents[228..232].bytes().reverse().hex().parse_uint(16, 0) or { return })
+			number_of_symbols: u32(exe_contents[232..236].bytes().reverse().hex().parse_uint(16, 0) or { return })
+			optional_header_size: u16(exe_contents[236..238].bytes().reverse().hex().parse_uint(16, 0) or { return })
 			characteristics: u16(exe_contents[238..240].bytes().reverse().hex().parse_uint(16, 0) or { return })
 		}
 	}
