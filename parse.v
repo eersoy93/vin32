@@ -153,7 +153,7 @@ fn parse_exe(exe_contents string)
 	}
 
 	// Check whether image has executable characteristic
-	if (pe32_file_header.characteristics & u16(0x02)) != 0
+	if pe32_file_header.characteristics & u16(0x02) != 0
 	{
 		println_debug("The EXE image is executable!")
 	}
