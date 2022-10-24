@@ -56,18 +56,20 @@ struct PE32_OPTIONAL_HEADER
 	entry_point                u32
 	base_of_code               u32
 	base_of_data               u32
-	image_size                 u32
+	image_base                 u32
 	section_alignment          u32
 	file_alignment             u32
 	os_version_major           u16
 	os_version_minor           u16
+	image_version_major        u16
+	image_version_minor        u16
 	subsystem_version_major    u16
 	subsystem_version_minor    u16
-	win32_version_value        u16
+	win32_version_value        u32
 	size_of_image              u32
 	size_of_headers            u32
 	checksum                   u32
-	subsystem                  u32
+	subsystem                  u16
 	dll_characteristics        u16
 	size_of_stack_reserve      u32
 	size_of_stack_commit       u32
@@ -75,21 +77,22 @@ struct PE32_OPTIONAL_HEADER
 	size_of_heap_commit        u32
 	loader_flags               u32
 	rvas_and_sizes_number      u32
-	export_table               u32
-	import_table               u32
-	resource_table             u32
-	exception_table            u32
-	certificate_table          u32
-	base_relocation_table      u32
-	debug_table                u32
-	architecture_specific_data u32
-	rva_of_global_pointer      u32
-	tls_table                  u32
-	load_config_table          u32
-	bound_import_table         u32
-	import_address_table       u32
-	delay_import_descriptor    u32
-	clr_runtime_header         u32
+	export_table               u64
+	import_table               u64
+	resource_table             u64
+	exception_table            u64
+	certificate_table          u64
+	base_relocation_table      u64
+	debug_table                u64
+	architecture_specific_data u64
+	rva_of_global_pointer      u64
+	tls_table                  u64
+	load_config_table          u64
+	bound_import_table         u64
+	import_address_table       u64
+	delay_import_descriptor    u64
+	clr_runtime_header         u64
+	reserved                   u64
 }
 
 struct PE32_SECTION_HEADER
