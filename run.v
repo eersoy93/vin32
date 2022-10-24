@@ -50,7 +50,7 @@ fn run_exe(exe_contents string) int
 	{
 		nt_signature:            u32(exe_contents[x..(x + 4)].bytes().hex().parse_uint(16, 0) or { panic })
 		machine_type:            u16(exe_contents[(x + 4)..(x + 6)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		sections_count:          u16(exe_contents[(x + 6)..(x + 8)].bytes().hex().parse_uint(16, 0) or { panic })
+		sections_count:          u16(exe_contents[(x + 6)..(x + 8)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		time_date_stamp:         u32(exe_contents[(x + 8)..(x + 12)].bytes().hex().parse_uint(16, 0) or { panic })
 		symbol_table_pointer:    u32(exe_contents[(x + 12)..(x + 16)].bytes().hex().parse_uint(16, 0) or { panic })
 		number_of_symbols:       u32(exe_contents[(x + 16)..(x + 20)].bytes().hex().parse_uint(16, 0) or { panic })
@@ -105,18 +105,20 @@ fn run_exe(exe_contents string) int
 		clr_runtime_header:         u32(exe_contents[(x + 172)..(x + 176)].bytes().hex().parse_uint(16, 0) or { panic })
 	}
 
-	pe32_section_header := PE32_SECTION_HEADER
-	{
-		name:                   u64(exe_contents[(x + 176)..(x + 182)].bytes().hex().parse_uint(16, 0) or { panic })
-		virtual_size:           u32(exe_contents[(x + 182)..(x + 186)].bytes().hex().parse_uint(16, 0) or { panic })
-		virtual_address:        u32(exe_contents[(x + 186)..(x + 190)].bytes().hex().parse_uint(16, 0) or { panic })
-		sizeof_raw_data:        u32(exe_contents[(x + 190)..(x + 194)].bytes().hex().parse_uint(16, 0) or { panic })
-		ptr_to_raw_data:        u32(exe_contents[(x + 194)..(x + 198)].bytes().hex().parse_uint(16, 0) or { panic })
-		ptr_to_relocations:     u32(exe_contents[(x + 198)..(x + 202)].bytes().hex().parse_uint(16, 0) or { panic })
-		ptr_to_line_numbers:    u32(exe_contents[(x + 202)..(x + 206)].bytes().hex().parse_uint(16, 0) or { panic })
-		number_of_relocations:  u16(exe_contents[(x + 206)..(x + 208)].bytes().hex().parse_uint(16, 0) or { panic })
-		number_of_line_numbers: u16(exe_contents[(x + 208)..(x + 210)].bytes().hex().parse_uint(16, 0) or { panic })
-		characteristics:        u32(exe_contents[(x + 210)..(x + 214)].bytes().hex().parse_uint(16, 0) or { panic })
+	exe_sections_count := int(pe32_file_header.sections_count)
+	pe32_section_headers := []PE32_SECTION_HEADER{len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
+		{
+			name:                   u64(exe_contents[(x + 40 * it + 176)..(x + 40 * it + 184)].bytes().hex().parse_uint(16, 0) or { panic })
+			virtual_size:           u32(exe_contents[(x + 40 * it + 184)..(x + 40 * it + 186)].bytes().hex().parse_uint(16, 0) or { panic })
+			virtual_address:        u32(exe_contents[(x + 40 * it + 186)..(x + 40 * it + 190)].bytes().hex().parse_uint(16, 0) or { panic })
+			sizeof_raw_data:        u32(exe_contents[(x + 40 * it + 190)..(x + 40 * it + 194)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_raw_data:        u32(exe_contents[(x + 40 * it + 194)..(x + 40 * it + 198)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_relocations:     u32(exe_contents[(x + 40 * it + 198)..(x + 40 * it + 202)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_line_numbers:    u32(exe_contents[(x + 40 * it + 202)..(x + 40 * it + 206)].bytes().hex().parse_uint(16, 0) or { panic })
+			number_of_relocations:  u16(exe_contents[(x + 40 * it + 206)..(x + 40 * it + 208)].bytes().hex().parse_uint(16, 0) or { panic })
+			number_of_line_numbers: u16(exe_contents[(x + 40 * it + 208)..(x + 40 * it + 210)].bytes().hex().parse_uint(16, 0) or { panic })
+			characteristics:        u32(exe_contents[(x + 40 * it + 210)..(x + 40 * it + 214)].bytes().hex().parse_uint(16, 0) or { panic })
+		}
 	}
 
 	// Check MZ signature
