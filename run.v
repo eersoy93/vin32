@@ -111,16 +111,25 @@ fn run_exe(exe_contents string) int
 	exe_sections_count := int(pe32_file_header.sections_count)
 	pe32_section_headers := []PE32_SECTION_HEADER{len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
 		{
-			name:                   u32(exe_contents[(x + 40 * it + 248)..(x + 40 * it + 252)].bytes().hex().parse_uint(16, 0) or { panic })
-			virtual_size:           u32(exe_contents[(x + 40 * it + 252)..(x + 40 * it + 256)].bytes().hex().parse_uint(16, 0) or { panic })
-			virtual_address:        u32(exe_contents[(x + 40 * it + 256)..(x + 40 * it + 260)].bytes().hex().parse_uint(16, 0) or { panic })
-			sizeof_raw_data:        u32(exe_contents[(x + 40 * it + 260)..(x + 40 * it + 264)].bytes().hex().parse_uint(16, 0) or { panic })
-			ptr_to_raw_data:        u32(exe_contents[(x + 40 * it + 264)..(x + 40 * it + 268)].bytes().hex().parse_uint(16, 0) or { panic })
-			ptr_to_relocations:     u32(exe_contents[(x + 40 * it + 268)..(x + 40 * it + 272)].bytes().hex().parse_uint(16, 0) or { panic })
-			ptr_to_line_numbers:    u32(exe_contents[(x + 40 * it + 272)..(x + 40 * it + 276)].bytes().hex().parse_uint(16, 0) or { panic })
-			number_of_relocations:  u16(exe_contents[(x + 40 * it + 276)..(x + 40 * it + 278)].bytes().hex().parse_uint(16, 0) or { panic })
-			number_of_line_numbers: u16(exe_contents[(x + 40 * it + 278)..(x + 40 * it + 280)].bytes().hex().parse_uint(16, 0) or { panic })
-			characteristics:        u32(exe_contents[(x + 40 * it + 280)..(x + 40 * it + 284)].bytes().hex().parse_uint(16, 0) or { panic })
+			name:                   [
+			                        u8(exe_contents[(x + 40 * it + 248)..(x + 40 * it + 249)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(x + 40 * it + 249)..(x + 40 * it + 250)].bytes().hex().parse_uint(16, 0) or { panic }),
+									u8(exe_contents[(x + 40 * it + 250)..(x + 40 * it + 251)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(x + 40 * it + 251)..(x + 40 * it + 252)].bytes().hex().parse_uint(16, 0) or { panic }),
+									u8(exe_contents[(x + 40 * it + 252)..(x + 40 * it + 253)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(x + 40 * it + 253)..(x + 40 * it + 254)].bytes().hex().parse_uint(16, 0) or { panic }),
+									u8(exe_contents[(x + 40 * it + 254)..(x + 40 * it + 255)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(x + 40 * it + 255)..(x + 40 * it + 256)].bytes().hex().parse_uint(16, 0) or { panic })
+			                        ]!
+			virtual_size:           u32(exe_contents[(x + 40 * it + 256)..(x + 40 * it + 260)].bytes().hex().parse_uint(16, 0) or { panic })
+			virtual_address:        u32(exe_contents[(x + 40 * it + 260)..(x + 40 * it + 264)].bytes().hex().parse_uint(16, 0) or { panic })
+			sizeof_raw_data:        u32(exe_contents[(x + 40 * it + 264)..(x + 40 * it + 268)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_raw_data:        u32(exe_contents[(x + 40 * it + 268)..(x + 40 * it + 272)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_relocations:     u32(exe_contents[(x + 40 * it + 272)..(x + 40 * it + 276)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_line_numbers:    u32(exe_contents[(x + 40 * it + 276)..(x + 40 * it + 280)].bytes().hex().parse_uint(16, 0) or { panic })
+			number_of_relocations:  u16(exe_contents[(x + 40 * it + 280)..(x + 40 * it + 282)].bytes().hex().parse_uint(16, 0) or { panic })
+			number_of_line_numbers: u16(exe_contents[(x + 40 * it + 282)..(x + 40 * it + 284)].bytes().hex().parse_uint(16, 0) or { panic })
+			characteristics:        u32(exe_contents[(x + 40 * it + 284)..(x + 40 * it + 288)].bytes().hex().parse_uint(16, 0) or { panic })
 		}
 	}
 
@@ -179,9 +188,15 @@ fn run_exe(exe_contents string) int
 		vin32_exit(1)
 	}
 
-	for pe32_section_header in pe32_section_headers
+	for i, pe32_section_header in pe32_section_headers
 	{
-		println_debug("Section name: ${pe32_section_header.name.hex()}")
+		name := pe32_section_header.name
+		mut name_bytes := []u8{}  // V doesn't support bytestr() method for fixed arrays currently.
+		for e in name
+		{
+			name_bytes << e
+		}
+		println_debug("The EXE section name #${i + 1} is: ${name_bytes.bytestr()}")
 	}
 
 	// TODO: Running code goes here!

@@ -97,7 +97,7 @@ struct PE32_OPTIONAL_HEADER
 
 struct PE32_SECTION_HEADER
 {
-	name                   u64
+	name                   [8]u8
 	virtual_size           u32
 	virtual_address        u32
 	sizeof_raw_data        u32
