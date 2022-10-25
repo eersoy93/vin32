@@ -188,15 +188,11 @@ fn run_exe(exe_contents string) int
 		vin32_exit(1)
 	}
 
+	// Debugly print image section names
 	for i, pe32_section_header in pe32_section_headers
 	{
-		name := pe32_section_header.name
-		mut name_bytes := []u8{}  // V doesn't support bytestr() method for fixed arrays currently.
-		for e in name
-		{
-			name_bytes << e
-		}
-		println_debug("The EXE section name #${i + 1} is: ${name_bytes.bytestr()}")
+		name := pe32_section_header.name[..]
+		println_debug("The EXE section name #${i + 1} is: ${name.bytestr()}")
 	}
 
 	// TODO: Running code goes here!
