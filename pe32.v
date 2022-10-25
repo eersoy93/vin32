@@ -77,22 +77,86 @@ struct PE32_OPTIONAL_HEADER
 	size_of_heap_commit        u32
 	loader_flags               u32
 	rvas_and_sizes_number      u32
-	export_table               u64
-	import_table               u64
-	resource_table             u64
-	exception_table            u64
-	certificate_table          u64
-	base_relocation_table      u64
-	debug_table                u64
-	architecture_specific_data u64
-	rva_of_global_pointer      u64
-	tls_table                  u64
-	load_config_table          u64
-	bound_import_table         u64
-	import_address_table       u64
-	delay_import_descriptor    u64
-	clr_runtime_header         u64
-	reserved                   u64
+	export_table               struct
+	{
+		address        u32
+		size           u32
+	}
+	import_table               struct
+	{
+		address        u32
+		size           u32
+	}
+	resource_table             struct
+	{
+		address        u32
+		size           u32
+	}
+	exception_table            struct
+	{
+		address        u32
+		size           u32
+	}
+	certificate_table          struct
+	{
+		address        u32
+		size           u32
+	}
+	base_relocation_table      struct
+	{
+		address        u32
+		size           u32
+	}
+	debug_table                struct
+	{
+		address        u32
+		size           u32
+	}
+	architecture_specific_data struct
+	{
+		address        u32
+		size           u32
+	}
+	rva_of_global_pointer      struct
+	{
+		address        u32
+		size           u32
+	}
+	tls_table                  struct
+	{
+		address        u32
+		size           u32
+	}
+	load_config_table          struct
+	{
+		address        u32
+		size           u32
+	}
+	bound_import_table         struct
+	{
+		address        u32
+		size           u32
+	}
+	import_address_table       struct
+	{
+		address        u32
+		size           u32
+	}
+	delay_import_descriptor    struct
+	{
+		address        u32
+		size           u32
+	}
+	clr_runtime_header         struct
+	{
+		address        u32
+		size           u32
+	}
+	reserved                   struct
+	{
+		address        u32
+		size           u32
+	}
 }
 
 struct PE32_SECTION_HEADER

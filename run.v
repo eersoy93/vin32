@@ -90,22 +90,86 @@ fn run_exe(exe_contents string) int
 		size_of_heap_commit:        u32(exe_contents[(x + 108)..(x + 112)].bytes().hex().parse_uint(16, 0) or { panic })
 		loader_flags:               u32(exe_contents[(x + 112)..(x + 116)].bytes().hex().parse_uint(16, 0) or { panic })
 		rvas_and_sizes_number:      u32(exe_contents[(x + 116)..(x + 120)].bytes().hex().parse_uint(16, 0) or { panic })
-		export_table:               u64(exe_contents[(x + 120)..(x + 128)].bytes().hex().parse_uint(16, 0) or { panic })
-		import_table:               u64(exe_contents[(x + 128)..(x + 136)].bytes().hex().parse_uint(16, 0) or { panic })
-		resource_table:             u64(exe_contents[(x + 136)..(x + 144)].bytes().hex().parse_uint(16, 0) or { panic })
-		exception_table:            u64(exe_contents[(x + 144)..(x + 152)].bytes().hex().parse_uint(16, 0) or { panic })
-		certificate_table:          u64(exe_contents[(x + 152)..(x + 160)].bytes().hex().parse_uint(16, 0) or { panic })
-		base_relocation_table:      u64(exe_contents[(x + 160)..(x + 168)].bytes().hex().parse_uint(16, 0) or { panic })
-		debug_table:                u64(exe_contents[(x + 168)..(x + 176)].bytes().hex().parse_uint(16, 0) or { panic })
-		architecture_specific_data: u64(exe_contents[(x + 176)..(x + 184)].bytes().hex().parse_uint(16, 0) or { panic })
-		rva_of_global_pointer:      u64(exe_contents[(x + 184)..(x + 192)].bytes().hex().parse_uint(16, 0) or { panic })
-		tls_table:                  u64(exe_contents[(x + 192)..(x + 200)].bytes().hex().parse_uint(16, 0) or { panic })
-		load_config_table:          u64(exe_contents[(x + 200)..(x + 208)].bytes().hex().parse_uint(16, 0) or { panic })
-		bound_import_table:         u64(exe_contents[(x + 208)..(x + 216)].bytes().hex().parse_uint(16, 0) or { panic })
-		import_address_table:       u64(exe_contents[(x + 216)..(x + 224)].bytes().hex().parse_uint(16, 0) or { panic })
-		delay_import_descriptor:    u64(exe_contents[(x + 224)..(x + 232)].bytes().hex().parse_uint(16, 0) or { panic })
-		clr_runtime_header:         u64(exe_contents[(x + 232)..(x + 240)].bytes().hex().parse_uint(16, 0) or { panic })
-		reserved:                   u64(exe_contents[(x + 240)..(x + 248)].bytes().hex().parse_uint(16, 0) or { panic })
+		export_table:               struct
+			{
+				u32(exe_contents[(x + 120)..(x + 124)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 124)..(x + 128)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		import_table:               struct
+			{
+				u32(exe_contents[(x + 128)..(x + 132)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 132)..(x + 136)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		resource_table:             struct
+			{
+				u32(exe_contents[(x + 136)..(x + 140)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 140)..(x + 144)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		exception_table:            struct
+			{
+				u32(exe_contents[(x + 144)..(x + 148)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 148)..(x + 152)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		certificate_table:          struct
+			{
+				u32(exe_contents[(x + 152)..(x + 156)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 156)..(x + 160)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		base_relocation_table:      struct
+			{
+				u32(exe_contents[(x + 160)..(x + 164)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 164)..(x + 168)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		debug_table:                struct
+			{
+				u32(exe_contents[(x + 168)..(x + 172)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 172)..(x + 176)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		architecture_specific_data: struct
+			{
+				u32(exe_contents[(x + 176)..(x + 180)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 180)..(x + 184)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		rva_of_global_pointer:      struct
+			{
+				u32(exe_contents[(x + 184)..(x + 188)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 188)..(x + 192)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		tls_table:                  struct
+			{
+				u32(exe_contents[(x + 192)..(x + 196)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 196)..(x + 200)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		load_config_table:          struct
+			{
+				u32(exe_contents[(x + 200)..(x + 204)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 204)..(x + 208)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		bound_import_table:         struct
+			{
+				u32(exe_contents[(x + 208)..(x + 212)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 212)..(x + 216)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		import_address_table:       struct
+			{
+				u32(exe_contents[(x + 216)..(x + 220)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 220)..(x + 224)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		delay_import_descriptor:    struct
+			{
+				u32(exe_contents[(x + 224)..(x + 228)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 228)..(x + 232)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		clr_runtime_header:         struct
+			{
+				u32(exe_contents[(x + 232)..(x + 236)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 236)..(x + 240)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
+		reserved:                   struct
+			{
+				u32(exe_contents[(x + 240)..(x + 244)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(x + 244)..(x + 248)].bytes().hex().parse_uint(16, 0) or { panic })
+			}
 	}
 
 	exe_sections_count := int(pe32_file_header.sections_count)
