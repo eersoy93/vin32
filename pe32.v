@@ -172,3 +172,12 @@ struct PE32_SECTION_HEADER
 	number_of_line_numbers u16
 	characteristics        u32
 }
+
+struct PE32_IMPORT_DESCRIPTOR
+{
+	original_first_thunk   u32
+	time_date_stamp        u32
+	forwarder              u32
+	rva_of_name            u32
+	first_thunk            u32
+}
