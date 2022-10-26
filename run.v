@@ -69,7 +69,7 @@ fn run_exe(exe_contents string) int
 		entry_point:                u32(exe_contents[(x + 40)..(x + 44)].bytes().hex().parse_uint(16, 0) or { panic })
 		base_of_code:               u32(exe_contents[(x + 44)..(x + 48)].bytes().hex().parse_uint(16, 0) or { panic })
 		base_of_data:               u32(exe_contents[(x + 48)..(x + 52)].bytes().hex().parse_uint(16, 0) or { panic })
-		image_base:                 u32(exe_contents[(x + 52)..(x + 56)].bytes().hex().parse_uint(16, 0) or { panic })
+		image_base:                 u32(exe_contents[(x + 52)..(x + 56)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		section_alignment:          u32(exe_contents[(x + 56)..(x + 60)].bytes().hex().parse_uint(16, 0) or { panic })
 		file_alignment:             u32(exe_contents[(x + 60)..(x + 64)].bytes().hex().parse_uint(16, 0) or { panic })
 		os_version_major:           u16(exe_contents[(x + 64)..(x + 66)].bytes().hex().parse_uint(16, 0) or { panic })
@@ -258,6 +258,8 @@ fn run_exe(exe_contents string) int
 		name := pe32_section_header.name[..]
 		println_debug("The EXE section name #${i + 1} is: ${name.bytestr()}")
 	}
+
+	println_debug("The EXE image base is: ${pe32_optional_header.image_base.hex()}")
 
 	// TODO: Running code goes here!
 
