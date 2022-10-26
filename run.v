@@ -230,6 +230,9 @@ fn run_exe(exe_contents string) int
 		vin32_exit(1)
 	}
 
+	// Debugly print EXE sections count
+	println_debug("Sections count of the EXE is: ${pe32_file_header.sections_count}")
+
 	// Check whether image has executable characteristic
 	if pe32_file_header.characteristics & u16(0x02) != 0
 	{
