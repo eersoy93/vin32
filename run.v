@@ -79,7 +79,7 @@ fn run_exe(exe_contents string) int
 		subsystem_version_major:    u16(exe_contents[(x + 72)..(x + 74)].bytes().hex().parse_uint(16, 0) or { panic })
 		subsystem_version_minor:    u16(exe_contents[(x + 74)..(x + 76)].bytes().hex().parse_uint(16, 0) or { panic })
 		win32_version_value:        u32(exe_contents[(x + 76)..(x + 80)].bytes().hex().parse_uint(16, 0) or { panic })
-		size_of_image:              u32(exe_contents[(x + 80)..(x + 84)].bytes().hex().parse_uint(16, 0) or { panic })
+		size_of_image:              u32(exe_contents[(x + 80)..(x + 84)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		size_of_headers:            u32(exe_contents[(x + 84)..(x + 88)].bytes().hex().parse_uint(16, 0) or { panic })
 		checksum:                   u32(exe_contents[(x + 88)..(x + 92)].bytes().hex().parse_uint(16, 0) or { panic })
 		subsystem:                  u16(exe_contents[(x + 92)..(x + 94)].bytes().hex().parse_uint(16, 0) or { panic })
@@ -267,7 +267,8 @@ fn run_exe(exe_contents string) int
 		println_debug("The EXE section name #${i + 1} is: ${name.bytestr()}")
 	}
 
-	println_debug("The EXE image base is: ${pe32_optional_header.image_base.hex()}")
+	println_debug("The EXE image base is: 0x${pe32_optional_header.image_base.hex()}")
+	println_debug("The EXE image size is: ${pe32_optional_header.size_of_image} bytes")
 
 	// TODO: Running code goes here!
 
