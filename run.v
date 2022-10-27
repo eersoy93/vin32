@@ -54,7 +54,7 @@ fn run_exe(exe_contents string) int
 		time_date_stamp:         u32(exe_contents[(x + 8)..(x + 12)].bytes().hex().parse_uint(16, 0) or { panic })
 		symbol_table_pointer:    u32(exe_contents[(x + 12)..(x + 16)].bytes().hex().parse_uint(16, 0) or { panic })
 		number_of_symbols:       u32(exe_contents[(x + 16)..(x + 20)].bytes().hex().parse_uint(16, 0) or { panic })
-		optional_header_size:    u16(exe_contents[(x + 20)..(x + 22)].bytes().hex().parse_uint(16, 0) or { panic })
+		optional_header_size:    u16(exe_contents[(x + 20)..(x + 22)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		characteristics:         u16(exe_contents[(x + 22)..(x + 24)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 	}
 
@@ -242,6 +242,11 @@ fn run_exe(exe_contents string) int
 	{
 		println_error("The EXE image is not executable!")
 		vin32_exit(1)
+	}
+
+	if pe32_file_header.optional_header_size != sizeof(pe32_optional_header)
+	{
+		println_warning("SizeOfOptionalHeader doesn't equal with size of the optional header.")
 	}
 
 	// Check whether image is PE32 image, not PE32+ or other
