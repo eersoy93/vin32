@@ -267,9 +267,11 @@ fn run_exe(exe_contents string) int
 		println_debug("The EXE section name #${i + 1} is: ${name.bytestr()}")
 	}
 
+	// Debugly print the image base and image size
 	println_debug("The EXE image base is: 0x${pe32_optional_header.image_base.hex()}")
 	println_debug("The EXE image size is: ${pe32_optional_header.size_of_image} bytes")
 
+	// Define memory
 	memory := define_memory(pe32_optional_header.size_of_image)
 	println_debug("The emulator memory has been defined.")
 
