@@ -272,8 +272,28 @@ fn run_exe(exe_contents string) int
 	println_debug("The EXE image size is: ${pe32_optional_header.size_of_image} bytes")
 
 	// Initialize EXE memory
-	memory := define_memory(pe32_optional_header.size_of_image)
+	mut memory := define_memory(pe32_optional_header.size_of_image)
 	println_debug("The EXE memory has been initialized.")
+
+	// Load headers to EXE memory
+
+	for i in 0..64  // For EXE DOS Header
+	{
+		memory[i] = exe_contents[i]
+	}
+
+	for i in x..(x + 248)  // For EXE File Header AND EXE Optional Header
+	{
+		memory[i] = exe_contents[i]
+	}
+
+	for i in 0..(exe_sections_count)  // For EXE section headers
+	{
+		for j in 248..288
+		{
+			memory[x + 40 * i + j] = exe_contents[x + 40 * i + j]
+		}
+	}
 
 	// TODO: Running code goes here!
 
