@@ -3,7 +3,7 @@ module main
 // For 32-bit PE exe files only currently
 fn run_exe(exe_contents string) int
 {
-	// Classify EXE contents to PE32_DOS_HEADER struct
+	// Classify EXE contents
 
 	pe32_dos_header := PE32_DOS_HEADER
 	{
