@@ -42,131 +42,131 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 		pointer_to_pe_header:           u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 	}
 
-	x := pe32_dos_header.pointer_to_pe_header
+	pe_header_pointer := pe32_dos_header.pointer_to_pe_header
 
 	pe32_file_header := PE32_FILE_HEADER
 	{
-		nt_signature:            u32(exe_contents[x..(x + 4)].bytes().hex().parse_uint(16, 0) or { panic })
-		machine_type:            u16(exe_contents[(x + 4)..(x + 6)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		sections_count:          u16(exe_contents[(x + 6)..(x + 8)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		time_date_stamp:         u32(exe_contents[(x + 8)..(x + 12)].bytes().hex().parse_uint(16, 0) or { panic })
-		symbol_table_pointer:    u32(exe_contents[(x + 12)..(x + 16)].bytes().hex().parse_uint(16, 0) or { panic })
-		number_of_symbols:       u32(exe_contents[(x + 16)..(x + 20)].bytes().hex().parse_uint(16, 0) or { panic })
-		optional_header_size:    u16(exe_contents[(x + 20)..(x + 22)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		characteristics:         u16(exe_contents[(x + 22)..(x + 24)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		nt_signature:            u32(exe_contents[pe_header_pointer..(pe_header_pointer + 4)].bytes().hex().parse_uint(16, 0) or { panic })
+		machine_type:            u16(exe_contents[(pe_header_pointer + 4)..(pe_header_pointer + 6)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		sections_count:          u16(exe_contents[(pe_header_pointer + 6)..(pe_header_pointer + 8)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		time_date_stamp:         u32(exe_contents[(pe_header_pointer + 8)..(pe_header_pointer + 12)].bytes().hex().parse_uint(16, 0) or { panic })
+		symbol_table_pointer:    u32(exe_contents[(pe_header_pointer + 12)..(pe_header_pointer + 16)].bytes().hex().parse_uint(16, 0) or { panic })
+		number_of_symbols:       u32(exe_contents[(pe_header_pointer + 16)..(pe_header_pointer + 20)].bytes().hex().parse_uint(16, 0) or { panic })
+		optional_header_size:    u16(exe_contents[(pe_header_pointer + 20)..(pe_header_pointer + 22)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		characteristics:         u16(exe_contents[(pe_header_pointer + 22)..(pe_header_pointer + 24)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 	}
 
 	pe32_optional_header := PE32_OPTIONAL_HEADER
 	{
-		magic:                      u16(exe_contents[(x + 24)..(x + 26)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		linker_version_major:       u8(exe_contents[(x + 26)..(x + 27)].bytes().hex().parse_uint(16, 0) or { panic })
-		linker_version_minor:       u8(exe_contents[(x + 27)..(x + 28)].bytes().hex().parse_uint(16, 0) or { panic })
-		code_size:                  u32(exe_contents[(x + 28)..(x + 32)].bytes().hex().parse_uint(16, 0) or { panic })
-		initialized_data_size:      u32(exe_contents[(x + 32)..(x + 36)].bytes().hex().parse_uint(16, 0) or { panic })
-		uninitialized_data_size:    u32(exe_contents[(x + 36)..(x + 40)].bytes().hex().parse_uint(16, 0) or { panic })
-		entry_point:                u32(exe_contents[(x + 40)..(x + 44)].bytes().hex().parse_uint(16, 0) or { panic })
-		base_of_code:               u32(exe_contents[(x + 44)..(x + 48)].bytes().hex().parse_uint(16, 0) or { panic })
-		base_of_data:               u32(exe_contents[(x + 48)..(x + 52)].bytes().hex().parse_uint(16, 0) or { panic })
-		image_base:                 u32(exe_contents[(x + 52)..(x + 56)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		section_alignment:          u32(exe_contents[(x + 56)..(x + 60)].bytes().hex().parse_uint(16, 0) or { panic })
-		file_alignment:             u32(exe_contents[(x + 60)..(x + 64)].bytes().hex().parse_uint(16, 0) or { panic })
-		os_version_major:           u16(exe_contents[(x + 64)..(x + 66)].bytes().hex().parse_uint(16, 0) or { panic })
-		os_version_minor:           u16(exe_contents[(x + 66)..(x + 68)].bytes().hex().parse_uint(16, 0) or { panic })
-		image_version_major:        u16(exe_contents[(x + 68)..(x + 70)].bytes().hex().parse_uint(16, 0) or { panic })
-		image_version_minor:        u16(exe_contents[(x + 70)..(x + 72)].bytes().hex().parse_uint(16, 0) or { panic })
-		subsystem_version_major:    u16(exe_contents[(x + 72)..(x + 74)].bytes().hex().parse_uint(16, 0) or { panic })
-		subsystem_version_minor:    u16(exe_contents[(x + 74)..(x + 76)].bytes().hex().parse_uint(16, 0) or { panic })
-		win32_version_value:        u32(exe_contents[(x + 76)..(x + 80)].bytes().hex().parse_uint(16, 0) or { panic })
-		size_of_image:              u32(exe_contents[(x + 80)..(x + 84)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		size_of_headers:            u32(exe_contents[(x + 84)..(x + 88)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
-		checksum:                   u32(exe_contents[(x + 88)..(x + 92)].bytes().hex().parse_uint(16, 0) or { panic })
-		subsystem:                  u16(exe_contents[(x + 92)..(x + 94)].bytes().hex().parse_uint(16, 0) or { panic })
-		dll_characteristics:        u16(exe_contents[(x + 94)..(x + 96)].bytes().hex().parse_uint(16, 0) or { panic })
-		size_of_stack_reserve:      u32(exe_contents[(x + 96)..(x + 100)].bytes().hex().parse_uint(16, 0) or { panic })
-		size_of_stack_commit:       u32(exe_contents[(x + 100)..(x + 104)].bytes().hex().parse_uint(16, 0) or { panic })
-		size_of_heap_reserve:       u32(exe_contents[(x + 104)..(x + 108)].bytes().hex().parse_uint(16, 0) or { panic })
-		size_of_heap_commit:        u32(exe_contents[(x + 108)..(x + 112)].bytes().hex().parse_uint(16, 0) or { panic })
-		loader_flags:               u32(exe_contents[(x + 112)..(x + 116)].bytes().hex().parse_uint(16, 0) or { panic })
-		rvas_and_sizes_number:      u32(exe_contents[(x + 116)..(x + 120)].bytes().hex().parse_uint(16, 0) or { panic })
+		magic:                      u16(exe_contents[(pe_header_pointer + 24)..(pe_header_pointer + 26)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		linker_version_major:       u8(exe_contents[(pe_header_pointer + 26)..(pe_header_pointer + 27)].bytes().hex().parse_uint(16, 0) or { panic })
+		linker_version_minor:       u8(exe_contents[(pe_header_pointer + 27)..(pe_header_pointer + 28)].bytes().hex().parse_uint(16, 0) or { panic })
+		code_size:                  u32(exe_contents[(pe_header_pointer + 28)..(pe_header_pointer + 32)].bytes().hex().parse_uint(16, 0) or { panic })
+		initialized_data_size:      u32(exe_contents[(pe_header_pointer + 32)..(pe_header_pointer + 36)].bytes().hex().parse_uint(16, 0) or { panic })
+		uninitialized_data_size:    u32(exe_contents[(pe_header_pointer + 36)..(pe_header_pointer + 40)].bytes().hex().parse_uint(16, 0) or { panic })
+		entry_point:                u32(exe_contents[(pe_header_pointer + 40)..(pe_header_pointer + 44)].bytes().hex().parse_uint(16, 0) or { panic })
+		base_of_code:               u32(exe_contents[(pe_header_pointer + 44)..(pe_header_pointer + 48)].bytes().hex().parse_uint(16, 0) or { panic })
+		base_of_data:               u32(exe_contents[(pe_header_pointer + 48)..(pe_header_pointer + 52)].bytes().hex().parse_uint(16, 0) or { panic })
+		image_base:                 u32(exe_contents[(pe_header_pointer + 52)..(pe_header_pointer + 56)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		section_alignment:          u32(exe_contents[(pe_header_pointer + 56)..(pe_header_pointer + 60)].bytes().hex().parse_uint(16, 0) or { panic })
+		file_alignment:             u32(exe_contents[(pe_header_pointer + 60)..(pe_header_pointer + 64)].bytes().hex().parse_uint(16, 0) or { panic })
+		os_version_major:           u16(exe_contents[(pe_header_pointer + 64)..(pe_header_pointer + 66)].bytes().hex().parse_uint(16, 0) or { panic })
+		os_version_minor:           u16(exe_contents[(pe_header_pointer + 66)..(pe_header_pointer + 68)].bytes().hex().parse_uint(16, 0) or { panic })
+		image_version_major:        u16(exe_contents[(pe_header_pointer + 68)..(pe_header_pointer + 70)].bytes().hex().parse_uint(16, 0) or { panic })
+		image_version_minor:        u16(exe_contents[(pe_header_pointer + 70)..(pe_header_pointer + 72)].bytes().hex().parse_uint(16, 0) or { panic })
+		subsystem_version_major:    u16(exe_contents[(pe_header_pointer + 72)..(pe_header_pointer + 74)].bytes().hex().parse_uint(16, 0) or { panic })
+		subsystem_version_minor:    u16(exe_contents[(pe_header_pointer + 74)..(pe_header_pointer + 76)].bytes().hex().parse_uint(16, 0) or { panic })
+		win32_version_value:        u32(exe_contents[(pe_header_pointer + 76)..(pe_header_pointer + 80)].bytes().hex().parse_uint(16, 0) or { panic })
+		size_of_image:              u32(exe_contents[(pe_header_pointer + 80)..(pe_header_pointer + 84)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		size_of_headers:            u32(exe_contents[(pe_header_pointer + 84)..(pe_header_pointer + 88)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+		checksum:                   u32(exe_contents[(pe_header_pointer + 88)..(pe_header_pointer + 92)].bytes().hex().parse_uint(16, 0) or { panic })
+		subsystem:                  u16(exe_contents[(pe_header_pointer + 92)..(pe_header_pointer + 94)].bytes().hex().parse_uint(16, 0) or { panic })
+		dll_characteristics:        u16(exe_contents[(pe_header_pointer + 94)..(pe_header_pointer + 96)].bytes().hex().parse_uint(16, 0) or { panic })
+		size_of_stack_reserve:      u32(exe_contents[(pe_header_pointer + 96)..(pe_header_pointer + 100)].bytes().hex().parse_uint(16, 0) or { panic })
+		size_of_stack_commit:       u32(exe_contents[(pe_header_pointer + 100)..(pe_header_pointer + 104)].bytes().hex().parse_uint(16, 0) or { panic })
+		size_of_heap_reserve:       u32(exe_contents[(pe_header_pointer + 104)..(pe_header_pointer + 108)].bytes().hex().parse_uint(16, 0) or { panic })
+		size_of_heap_commit:        u32(exe_contents[(pe_header_pointer + 108)..(pe_header_pointer + 112)].bytes().hex().parse_uint(16, 0) or { panic })
+		loader_flags:               u32(exe_contents[(pe_header_pointer + 112)..(pe_header_pointer + 116)].bytes().hex().parse_uint(16, 0) or { panic })
+		rvas_and_sizes_number:      u32(exe_contents[(pe_header_pointer + 116)..(pe_header_pointer + 120)].bytes().hex().parse_uint(16, 0) or { panic })
 		export_table:               struct
 			{
-				u32(exe_contents[(x + 120)..(x + 124)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 124)..(x + 128)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 120)..(pe_header_pointer + 124)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 124)..(pe_header_pointer + 128)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		import_table:               struct
 			{
-				u32(exe_contents[(x + 128)..(x + 132)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 132)..(x + 136)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 128)..(pe_header_pointer + 132)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 132)..(pe_header_pointer + 136)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		resource_table:             struct
 			{
-				u32(exe_contents[(x + 136)..(x + 140)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 140)..(x + 144)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 136)..(pe_header_pointer + 140)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 140)..(pe_header_pointer + 144)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		exception_table:            struct
 			{
-				u32(exe_contents[(x + 144)..(x + 148)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 148)..(x + 152)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 144)..(pe_header_pointer + 148)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 148)..(pe_header_pointer + 152)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		certificate_table:          struct
 			{
-				u32(exe_contents[(x + 152)..(x + 156)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 156)..(x + 160)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 152)..(pe_header_pointer + 156)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 156)..(pe_header_pointer + 160)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		base_relocation_table:      struct
 			{
-				u32(exe_contents[(x + 160)..(x + 164)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 164)..(x + 168)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 160)..(pe_header_pointer + 164)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 164)..(pe_header_pointer + 168)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		debug_table:                struct
 			{
-				u32(exe_contents[(x + 168)..(x + 172)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 172)..(x + 176)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 168)..(pe_header_pointer + 172)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 172)..(pe_header_pointer + 176)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		architecture_specific_data: struct
 			{
-				u32(exe_contents[(x + 176)..(x + 180)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 180)..(x + 184)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 176)..(pe_header_pointer + 180)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 180)..(pe_header_pointer + 184)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		rva_of_global_pointer:      struct
 			{
-				u32(exe_contents[(x + 184)..(x + 188)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 188)..(x + 192)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 184)..(pe_header_pointer + 188)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 188)..(pe_header_pointer + 192)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		tls_table:                  struct
 			{
-				u32(exe_contents[(x + 192)..(x + 196)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 196)..(x + 200)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 192)..(pe_header_pointer + 196)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 196)..(pe_header_pointer + 200)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		load_config_table:          struct
 			{
-				u32(exe_contents[(x + 200)..(x + 204)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 204)..(x + 208)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 200)..(pe_header_pointer + 204)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 204)..(pe_header_pointer + 208)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		bound_import_table:         struct
 			{
-				u32(exe_contents[(x + 208)..(x + 212)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 212)..(x + 216)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 208)..(pe_header_pointer + 212)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 212)..(pe_header_pointer + 216)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		import_address_table:       struct
 			{
-				u32(exe_contents[(x + 216)..(x + 220)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 220)..(x + 224)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 216)..(pe_header_pointer + 220)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 220)..(pe_header_pointer + 224)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		delay_import_descriptor:    struct
 			{
-				u32(exe_contents[(x + 224)..(x + 228)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 228)..(x + 232)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 224)..(pe_header_pointer + 228)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 228)..(pe_header_pointer + 232)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		clr_runtime_header:         struct
 			{
-				u32(exe_contents[(x + 232)..(x + 236)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 236)..(x + 240)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 232)..(pe_header_pointer + 236)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 236)..(pe_header_pointer + 240)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 		reserved:                   struct
 			{
-				u32(exe_contents[(x + 240)..(x + 244)].bytes().hex().parse_uint(16, 0) or { panic })
-				u32(exe_contents[(x + 244)..(x + 248)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 240)..(pe_header_pointer + 244)].bytes().hex().parse_uint(16, 0) or { panic })
+				u32(exe_contents[(pe_header_pointer + 244)..(pe_header_pointer + 248)].bytes().hex().parse_uint(16, 0) or { panic })
 			}
 	}
 
@@ -174,26 +174,26 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 	pe32_section_headers := []PE32_SECTION_HEADER{len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
 		{
 			name:                   [
-			                        u8(exe_contents[(x + 40 * it + 248)..(x + 40 * it + 249)].bytes().hex().parse_uint(16, 0) or { panic }),
-			                        u8(exe_contents[(x + 40 * it + 249)..(x + 40 * it + 250)].bytes().hex().parse_uint(16, 0) or { panic }),
-									u8(exe_contents[(x + 40 * it + 250)..(x + 40 * it + 251)].bytes().hex().parse_uint(16, 0) or { panic }),
-			                        u8(exe_contents[(x + 40 * it + 251)..(x + 40 * it + 252)].bytes().hex().parse_uint(16, 0) or { panic }),
-									u8(exe_contents[(x + 40 * it + 252)..(x + 40 * it + 253)].bytes().hex().parse_uint(16, 0) or { panic }),
-			                        u8(exe_contents[(x + 40 * it + 253)..(x + 40 * it + 254)].bytes().hex().parse_uint(16, 0) or { panic }),
-									u8(exe_contents[(x + 40 * it + 254)..(x + 40 * it + 255)].bytes().hex().parse_uint(16, 0) or { panic }),
-			                        u8(exe_contents[(x + 40 * it + 255)..(x + 40 * it + 256)].bytes().hex().parse_uint(16, 0) or { panic })
+			                        u8(exe_contents[(pe_header_pointer + 40 * it + 248)..(pe_header_pointer + 40 * it + 249)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(pe_header_pointer + 40 * it + 249)..(pe_header_pointer + 40 * it + 250)].bytes().hex().parse_uint(16, 0) or { panic }),
+									u8(exe_contents[(pe_header_pointer + 40 * it + 250)..(pe_header_pointer + 40 * it + 251)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(pe_header_pointer + 40 * it + 251)..(pe_header_pointer + 40 * it + 252)].bytes().hex().parse_uint(16, 0) or { panic }),
+									u8(exe_contents[(pe_header_pointer + 40 * it + 252)..(pe_header_pointer + 40 * it + 253)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(pe_header_pointer + 40 * it + 253)..(pe_header_pointer + 40 * it + 254)].bytes().hex().parse_uint(16, 0) or { panic }),
+									u8(exe_contents[(pe_header_pointer + 40 * it + 254)..(pe_header_pointer + 40 * it + 255)].bytes().hex().parse_uint(16, 0) or { panic }),
+			                        u8(exe_contents[(pe_header_pointer + 40 * it + 255)..(pe_header_pointer + 40 * it + 256)].bytes().hex().parse_uint(16, 0) or { panic })
 			                        ]!
-			virtual_size:           u32(exe_contents[(x + 40 * it + 256)..(x + 40 * it + 260)].bytes().hex().parse_uint(16, 0) or { panic })
-			virtual_address:        u32(exe_contents[(x + 40 * it + 260)..(x + 40 * it + 264)].bytes().hex().parse_uint(16, 0) or { panic })
-			sizeof_raw_data:        u32(exe_contents[(x + 40 * it + 264)..(x + 40 * it + 268)].bytes().hex().parse_uint(16, 0) or { panic })
-			ptr_to_raw_data:        u32(exe_contents[(x + 40 * it + 268)..(x + 40 * it + 272)].bytes().hex().parse_uint(16, 0) or { panic })
-			ptr_to_relocations:     u32(exe_contents[(x + 40 * it + 272)..(x + 40 * it + 276)].bytes().hex().parse_uint(16, 0) or { panic })
-			ptr_to_line_numbers:    u32(exe_contents[(x + 40 * it + 276)..(x + 40 * it + 280)].bytes().hex().parse_uint(16, 0) or { panic })
-			number_of_relocations:  u16(exe_contents[(x + 40 * it + 280)..(x + 40 * it + 282)].bytes().hex().parse_uint(16, 0) or { panic })
-			number_of_line_numbers: u16(exe_contents[(x + 40 * it + 282)..(x + 40 * it + 284)].bytes().hex().parse_uint(16, 0) or { panic })
-			characteristics:        u32(exe_contents[(x + 40 * it + 284)..(x + 40 * it + 288)].bytes().hex().parse_uint(16, 0) or { panic })
+			virtual_size:           u32(exe_contents[(pe_header_pointer + 40 * it + 256)..(pe_header_pointer + 40 * it + 260)].bytes().hex().parse_uint(16, 0) or { panic })
+			virtual_address:        u32(exe_contents[(pe_header_pointer + 40 * it + 260)..(pe_header_pointer + 40 * it + 264)].bytes().hex().parse_uint(16, 0) or { panic })
+			sizeof_raw_data:        u32(exe_contents[(pe_header_pointer + 40 * it + 264)..(pe_header_pointer + 40 * it + 268)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_raw_data:        u32(exe_contents[(pe_header_pointer + 40 * it + 268)..(pe_header_pointer + 40 * it + 272)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_relocations:     u32(exe_contents[(pe_header_pointer + 40 * it + 272)..(pe_header_pointer + 40 * it + 276)].bytes().hex().parse_uint(16, 0) or { panic })
+			ptr_to_line_numbers:    u32(exe_contents[(pe_header_pointer + 40 * it + 276)..(pe_header_pointer + 40 * it + 280)].bytes().hex().parse_uint(16, 0) or { panic })
+			number_of_relocations:  u16(exe_contents[(pe_header_pointer + 40 * it + 280)..(pe_header_pointer + 40 * it + 282)].bytes().hex().parse_uint(16, 0) or { panic })
+			number_of_line_numbers: u16(exe_contents[(pe_header_pointer + 40 * it + 282)..(pe_header_pointer + 40 * it + 284)].bytes().hex().parse_uint(16, 0) or { panic })
+			characteristics:        u32(exe_contents[(pe_header_pointer + 40 * it + 284)..(pe_header_pointer + 40 * it + 288)].bytes().hex().parse_uint(16, 0) or { panic })
 		}
 	}
 
-	return pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers, x, exe_sections_count
+	return pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers, pe_header_pointer, exe_sections_count
 }
