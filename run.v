@@ -39,7 +39,7 @@ fn run_exe(exe_contents string) int
 		}
 	}
 
-	// Load sections to EXE memory
+	// Load sections to EXE memory (FIXME: Incrorrect, alignments will be included!!!)
 	for i, section in pe32_section_headers
 	{
 		for j in 0..(section.virtual_size)
