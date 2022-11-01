@@ -32,6 +32,16 @@ fn run_exe(exe_contents string) int
 		}
 	}
 
+	for i, section in pe32_section_headers  // For EXE sections
+	{
+		for j in 0..(section.virtual_size)
+		{
+			memory[section.virtual_address + j] = exe_contents[section.virtual_address + j]
+		}
+		name := section.name[..]
+		println_debug("${name.bytestr()} section has been loaded.")
+	}
+
 	// TODO: To be continued!
 
 	return 0

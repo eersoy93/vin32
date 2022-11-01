@@ -61,11 +61,11 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 		magic:                      u16(exe_contents[(pe_header_pointer + 24)..(pe_header_pointer + 26)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		linker_version_major:       u8(exe_contents[(pe_header_pointer + 26)..(pe_header_pointer + 27)].bytes().hex().parse_uint(16, 0) or { panic })
 		linker_version_minor:       u8(exe_contents[(pe_header_pointer + 27)..(pe_header_pointer + 28)].bytes().hex().parse_uint(16, 0) or { panic })
-		code_size:                  u32(exe_contents[(pe_header_pointer + 28)..(pe_header_pointer + 32)].bytes().hex().parse_uint(16, 0) or { panic })
+		code_size:                  u32(exe_contents[(pe_header_pointer + 28)..(pe_header_pointer + 32)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		initialized_data_size:      u32(exe_contents[(pe_header_pointer + 32)..(pe_header_pointer + 36)].bytes().hex().parse_uint(16, 0) or { panic })
 		uninitialized_data_size:    u32(exe_contents[(pe_header_pointer + 36)..(pe_header_pointer + 40)].bytes().hex().parse_uint(16, 0) or { panic })
 		entry_point:                u32(exe_contents[(pe_header_pointer + 40)..(pe_header_pointer + 44)].bytes().hex().parse_uint(16, 0) or { panic })
-		base_of_code:               u32(exe_contents[(pe_header_pointer + 44)..(pe_header_pointer + 48)].bytes().hex().parse_uint(16, 0) or { panic })
+		base_of_code:               u32(exe_contents[(pe_header_pointer + 44)..(pe_header_pointer + 48)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		base_of_data:               u32(exe_contents[(pe_header_pointer + 48)..(pe_header_pointer + 52)].bytes().hex().parse_uint(16, 0) or { panic })
 		image_base:                 u32(exe_contents[(pe_header_pointer + 52)..(pe_header_pointer + 56)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 		section_alignment:          u32(exe_contents[(pe_header_pointer + 56)..(pe_header_pointer + 60)].bytes().hex().parse_uint(16, 0) or { panic })
@@ -171,7 +171,8 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 	}
 
 	exe_sections_count := int(pe32_file_header.sections_count)
-	pe32_section_headers := []PE32_SECTION_HEADER{len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
+	pe32_section_headers := []PE32_SECTION_HEADER
+	{ len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
 		{
 			name:                   [
 			                        u8(exe_contents[(pe_header_pointer + 40 * it + 248)..(pe_header_pointer + 40 * it + 249)].bytes().hex().parse_uint(16, 0) or { panic }),
@@ -183,8 +184,8 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 									u8(exe_contents[(pe_header_pointer + 40 * it + 254)..(pe_header_pointer + 40 * it + 255)].bytes().hex().parse_uint(16, 0) or { panic }),
 			                        u8(exe_contents[(pe_header_pointer + 40 * it + 255)..(pe_header_pointer + 40 * it + 256)].bytes().hex().parse_uint(16, 0) or { panic })
 			                        ]!
-			virtual_size:           u32(exe_contents[(pe_header_pointer + 40 * it + 256)..(pe_header_pointer + 40 * it + 260)].bytes().hex().parse_uint(16, 0) or { panic })
-			virtual_address:        u32(exe_contents[(pe_header_pointer + 40 * it + 260)..(pe_header_pointer + 40 * it + 264)].bytes().hex().parse_uint(16, 0) or { panic })
+			virtual_size:           u32(exe_contents[(pe_header_pointer + 40 * it + 256)..(pe_header_pointer + 40 * it + 260)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
+			virtual_address:        u32(exe_contents[(pe_header_pointer + 40 * it + 260)..(pe_header_pointer + 40 * it + 264)].bytes().reverse().hex().parse_uint(16, 0) or { panic })
 			sizeof_raw_data:        u32(exe_contents[(pe_header_pointer + 40 * it + 264)..(pe_header_pointer + 40 * it + 268)].bytes().hex().parse_uint(16, 0) or { panic })
 			ptr_to_raw_data:        u32(exe_contents[(pe_header_pointer + 40 * it + 268)..(pe_header_pointer + 40 * it + 272)].bytes().hex().parse_uint(16, 0) or { panic })
 			ptr_to_relocations:     u32(exe_contents[(pe_header_pointer + 40 * it + 272)..(pe_header_pointer + 40 * it + 276)].bytes().hex().parse_uint(16, 0) or { panic })
