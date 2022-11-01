@@ -44,7 +44,7 @@ fn run_exe(exe_contents string) int
 	{
 		for j in 0..(section.virtual_size)
 		{
-			memory[section.virtual_address + j] = exe_contents[section.virtual_address + j]
+			memory[section.virtual_address + j] = exe_contents[section.ptr_to_raw_data + j]
 		}
 		name := section.name[..]
 		println_debug("${name.bytestr()} section has been loaded.")
