@@ -10,7 +10,14 @@ fn run_exe(exe_contents string) int
 
 	// Initialize EXE memory
 	mut memory := init_memory(pe32_optional_header.size_of_image)
-	println_debug("The EXE memory has been initialized.")
+	if memory.len == pe32_optional_header.size_of_image
+	{
+		println_debug("The EXE memory has been initialized with EXE image size bytes.")
+	}
+	else
+	{
+		println_error("The EXE memory has not been initialized with EXE image size bytes.")
+	}
 
 	// Load headers to EXE memory
 
