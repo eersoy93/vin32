@@ -49,6 +49,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 		vin32_exit(1)
 	}
 
+	// Check SizeOfOptionalHeader equals sizeof(PE32_OPTIONAL_HEADER of the EXE)
 	if pe32_file_header.optional_header_size != sizeof(pe32_optional_header)
 	{
 		println_warning("SizeOfOptionalHeader doesn't equal with size of the optional header.")
@@ -63,6 +64,11 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	{
 		println_error("The EXE image is not PE32 (NT32) image!")
 		vin32_exit(1)
+	}
+
+	if pe32_optional_header.rvas_and_sizes_number > 16
+	{
+		println_warning("NumberOfRvaAndSizes is greater than 16!")
 	}
 
 	// Debugly print image section names
