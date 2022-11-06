@@ -51,19 +51,25 @@ fn run_exe(exe_contents string) int
 	}
 
 	// Parse import directories on the EXE exe_memory
-	// FIXME: This is wrong.
 	import_directories_address := int(pe32_optional_header.import_table.address)
-	import_directories_size := int(pe32_optional_header.import_table.size)
-	import_directories_count := int(import_directories_size / 20)
-	println(import_directories_count)
-	pe32_import_descriptors := []PE32_IMPORT_DESCRIPTOR
-	{ len: import_directories_count, cap: import_directories_count, init: PE32_IMPORT_DESCRIPTOR
+	mut pe32_import_descriptors := []PE32_IMPORT_DESCRIPTOR{}
+	for i in 0..32767  // A hardcoded arbitrary big number
+	{
+		pe32_import_descriptor := PE32_IMPORT_DESCRIPTOR
+			{
+				original_first_thunk: u32(exe_memory[(import_directories_address + i * 20)..(import_directories_address + i * 20 + 4)].reverse().hex().parse_uint(16, 0) or { panic })
+				time_date_stamp:      u32(exe_memory[(import_directories_address + i * 20 + 4)..(import_directories_address + i * 20 + 8)].reverse().hex().parse_uint(16, 0) or { panic })
+				forwarder:            u32(exe_memory[(import_directories_address + i * 20 + 8)..(import_directories_address + i * 20 + 12)].reverse().hex().parse_uint(16, 0) or { panic })
+				rva_of_name:          u32(exe_memory[(import_directories_address + i * 20 + 12)..(import_directories_address + i * 20 + 16)].reverse().hex().parse_uint(16, 0) or { panic })
+				first_thunk:          u32(exe_memory[(import_directories_address + i * 20 + 16)..(import_directories_address + i * 20 + 20)].reverse().hex().parse_uint(16, 0) or { panic })
+			}
+		if pe32_import_descriptor.original_first_thunk == u32(0x00000000)
 		{
-			original_first_thunk: u32(exe_memory[(import_directories_address + it * 20)..(import_directories_address + it * 20 + 4)].reverse().hex().parse_uint(16, 0) or { panic })
-			time_date_stamp:      u32(exe_memory[(import_directories_address + it * 20 + 4)..(import_directories_address + it * 20 + 8)].reverse().hex().parse_uint(16, 0) or { panic })
-			forwarder:            u32(exe_memory[(import_directories_address + it * 20 + 8)..(import_directories_address + it * 20 + 12)].reverse().hex().parse_uint(16, 0) or { panic })
-			rva_of_name:          u32(exe_memory[(import_directories_address + it * 20 + 12)..(import_directories_address + it * 20 + 16)].reverse().hex().parse_uint(16, 0) or { panic })
-			first_thunk:          u32(exe_memory[(import_directories_address + it * 20 + 16)..(import_directories_address + it * 20 + 20)].reverse().hex().parse_uint(16, 0) or { panic })
+			break
+		}
+		else
+		{
+			pe32_import_descriptors << pe32_import_descriptor
 		}
 	}
 
