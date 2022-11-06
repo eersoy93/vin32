@@ -50,7 +50,7 @@ fn run_exe(exe_contents string) int
 		println_debug("${name.bytestr()} section has been loaded.")
 	}
 
-	// Parse imports on the EXE exe_memory
+	// Parse import directories on the EXE exe_memory
 	import_directories_address := pe32_optional_header.import_table.address
 	import_directories_size := pe32_optional_header.import_table.size
 	import_directories_count := import_directories_size / sizeof(PE32_IMPORT_DESCRIPTOR)
