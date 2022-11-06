@@ -51,18 +51,35 @@ fn run_exe(exe_contents string) int
 	}
 
 	// Parse import directories on the EXE exe_memory
-	import_directories_address := pe32_optional_header.import_table.address
-	import_directories_size := pe32_optional_header.import_table.size
-	import_directories_count := import_directories_size / sizeof(PE32_IMPORT_DESCRIPTOR)
+	// FIXME: This is wrong.
+	import_directories_address := int(pe32_optional_header.import_table.address)
+	import_directories_size := int(pe32_optional_header.import_table.size)
+	import_directories_count := int(import_directories_size / 20)
+	println(import_directories_count)
 	pe32_import_descriptors := []PE32_IMPORT_DESCRIPTOR
-	{ len: int(import_directories_count), cap: int(import_directories_count), init: PE32_IMPORT_DESCRIPTOR
+	{ len: import_directories_count, cap: import_directories_count, init: PE32_IMPORT_DESCRIPTOR
 		{
-			original_first_thunk: u32(exe_memory[(import_directories_address + u32(it) * import_directories_size)..(import_directories_address + u32(it) * import_directories_size + 4)].reverse().hex().parse_uint(16, 0) or { panic })
-			time_date_stamp:      u32(exe_memory[(import_directories_address + u32(it) * import_directories_size + 4)..(import_directories_address + u32(it) * import_directories_size + 8)].reverse().hex().parse_uint(16, 0) or { panic })
-			forwarder:            u32(exe_memory[(import_directories_address + u32(it) * import_directories_size + 8)..(import_directories_address + u32(it) * import_directories_size + 12)].reverse().hex().parse_uint(16, 0) or { panic })
-			rva_of_name:          u32(exe_memory[(import_directories_address + u32(it) * import_directories_size + 12)..(import_directories_address + u32(it) * import_directories_size + 16)].reverse().hex().parse_uint(16, 0) or { panic })
-			first_thunk:          u32(exe_memory[(import_directories_address + u32(it) * import_directories_size + 16)..(import_directories_address + u32(it) * import_directories_size + 20)].reverse().hex().parse_uint(16, 0) or { panic })
+			original_first_thunk: u32(exe_memory[(import_directories_address + it * 20)..(import_directories_address + it * 20 + 4)].reverse().hex().parse_uint(16, 0) or { panic })
+			time_date_stamp:      u32(exe_memory[(import_directories_address + it * 20 + 4)..(import_directories_address + it * 20 + 8)].reverse().hex().parse_uint(16, 0) or { panic })
+			forwarder:            u32(exe_memory[(import_directories_address + it * 20 + 8)..(import_directories_address + it * 20 + 12)].reverse().hex().parse_uint(16, 0) or { panic })
+			rva_of_name:          u32(exe_memory[(import_directories_address + it * 20 + 12)..(import_directories_address + it * 20 + 16)].reverse().hex().parse_uint(16, 0) or { panic })
+			first_thunk:          u32(exe_memory[(import_directories_address + it * 20 + 16)..(import_directories_address + it * 20 + 20)].reverse().hex().parse_uint(16, 0) or { panic })
 		}
+	}
+
+	// Print import DLL names for debugging
+	for i, pe32_import_descriptor in pe32_import_descriptors
+	{
+		mut dll_name_len := u8(0)
+		for j in exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + 255)]
+		{
+			if j == u8(0)
+			{
+				break
+			}
+			dll_name_len++
+		}
+		println_debug("DLL is required: ${exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + dll_name_len)].bytestr()}")
 	}
 
 	// TODO: To be continued!
