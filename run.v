@@ -100,7 +100,7 @@ fn run_exe(exe_contents string) int
 			{
 				continue
 			}
-			for k in 0..255
+			for _ in 0..255
 			{
 				if exe_memory[import_name_address_end] == 0
 				{
