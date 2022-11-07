@@ -73,8 +73,8 @@ fn run_exe(exe_contents string) int
 		}
 	}
 
-	// Print import DLL names for debugging
-	for i, pe32_import_descriptor in pe32_import_descriptors
+	// Print import DLL names and the APIs for debugging
+	for pe32_import_descriptor in pe32_import_descriptors
 	{
 		mut dll_name_len := u8(0)
 		for j in exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + 255)]
@@ -85,7 +85,32 @@ fn run_exe(exe_contents string) int
 			}
 			dll_name_len++
 		}
-		println_debug("DLL is required: ${exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + dll_name_len)].bytestr()}")
+		println_debug("DLL is required for the APIs below: ${exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + dll_name_len)].bytestr()}")
+
+		for j in 0..4096
+		{
+			import_address := u32(exe_memory[(pe32_import_descriptor.first_thunk + 4 * j)..(pe32_import_descriptor.first_thunk + 4 * j + 4)].reverse().hex().parse_uint(16, 0) or { panic })
+			if import_address == 0
+			{
+				break
+			}
+			import_name_address_start := import_address + 2
+			mut import_name_address_end := import_name_address_start
+			if import_name_address_start > pe32_optional_header.size_of_image
+			{
+				continue
+			}
+			for k in 0..255
+			{
+				if exe_memory[import_name_address_end] == 0
+				{
+					break
+				}
+				import_name_address_end++
+			}
+			println_debug("    ${exe_memory[import_name_address_start..import_name_address_end].bytestr()}")
+		}
+
 	}
 
 	// TODO: To be continued!
