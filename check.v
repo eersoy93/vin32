@@ -10,7 +10,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	else
 	{
 		println_error("MZ signature not found!")
-		vin32_exit(1)
+		vin32_exit(exit_failure)
 	}
 
 	// Check PE signature
@@ -21,7 +21,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	else
 	{
 		println_error("PE signature not found!")
-		vin32_exit(1)
+		vin32_exit(exit_failure)
 	}
 
 	// Check EXE machine type
@@ -32,7 +32,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	else
 	{
 		println_error("The EXE machine type is incorrect!")
-		vin32_exit(1)
+		vin32_exit(exit_failure)
 	}
 
 	// Debugly print EXE sections count
@@ -46,7 +46,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	else
 	{
 		println_error("The EXE image is not executable!")
-		vin32_exit(1)
+		vin32_exit(exit_failure)
 	}
 
 	// Check SizeOfOptionalHeader equals sizeof(PE32_OPTIONAL_HEADER of the EXE)
@@ -63,7 +63,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	else
 	{
 		println_error("The EXE image is not PE32 (NT32) image!")
-		vin32_exit(1)
+		vin32_exit(exit_failure)
 	}
 
 	if pe32_optional_header.rvas_and_sizes_number > 16

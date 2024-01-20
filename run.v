@@ -25,67 +25,12 @@ fn run_exe(exe_contents string) int
 	// Parse import directories on the EXE exe_memory
 	import_directories_address := int(pe32_optional_header.import_table.address)
 	mut pe32_import_descriptors := []PE32_IMPORT_DESCRIPTOR{}
-	for i in 0..(max_int)
-	{
-		pe32_import_descriptor := PE32_IMPORT_DESCRIPTOR
-			{
-				original_first_thunk: u32(exe_memory[(import_directories_address + i * 20)..(import_directories_address + i * 20 + 4)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				time_date_stamp:      u32(exe_memory[(import_directories_address + i * 20 + 4)..(import_directories_address + i * 20 + 8)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				forwarder:            u32(exe_memory[(import_directories_address + i * 20 + 8)..(import_directories_address + i * 20 + 12)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				rva_of_name:          u32(exe_memory[(import_directories_address + i * 20 + 12)..(import_directories_address + i * 20 + 16)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				first_thunk:          u32(exe_memory[(import_directories_address + i * 20 + 16)..(import_directories_address + i * 20 + 20)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			}
-		if pe32_import_descriptor.original_first_thunk == u32(0x00000000)
-		{
-			break
-		}
-		else
-		{
-			pe32_import_descriptors << pe32_import_descriptor
-		}
-	}
+	parse_imports(exe_memory, import_directories_address, mut &pe32_import_descriptors)
 
 	// Print import DLL names and the APIs for debugging
-	for pe32_import_descriptor in pe32_import_descriptors
-	{
-		mut dll_name_len := u8(0)
-		for j in exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + 255)]
-		{
-			if j == u8(0)
-			{
-				break
-			}
-			dll_name_len++
-		}
-		println_debug("DLL is required for the APIs below: ${exe_memory[(pe32_import_descriptor.rva_of_name)..(pe32_import_descriptor.rva_of_name + dll_name_len)].bytestr()}")
-
-		for j in 0..4096
-		{
-			import_address := u32(exe_memory[(pe32_import_descriptor.first_thunk + 4 * j)..(pe32_import_descriptor.first_thunk + 4 * j + 4)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			if import_address == 0
-			{
-				break
-			}
-			import_name_address_start := import_address + 2
-			mut import_name_address_end := import_name_address_start
-			if import_name_address_start > pe32_optional_header.size_of_image
-			{
-				continue
-			}
-			for _ in 0..255
-			{
-				if exe_memory[import_name_address_end] == 0
-				{
-					break
-				}
-				import_name_address_end++
-			}
-			println_debug("    ${exe_memory[import_name_address_start..import_name_address_end].bytestr()}")
-		}
-	}
+	print_imports(pe32_import_descriptors, exe_memory, pe32_optional_header)
 
 	// Disassemble the EXE code from entry point
-
 	entry_point_address := pe32_optional_header.entry_point
 	code_size := pe32_optional_header.code_size
 	code_part := exe_memory[(entry_point_address)..(entry_point_address + code_size)].clone()
@@ -96,5 +41,6 @@ fn run_exe(exe_contents string) int
 
 	// TODO: To be continued!
 
-	return 0
+	// Return if success
+	return exit_success
 }

@@ -31,7 +31,7 @@ fn disasm(entry_point_address u32, code_size u32, code_part []u8, mut opcodes []
 					{
 						println_error("Invalid or unrecognized ModR/M byte!")
 						println_debug(opcodes.str())
-						vin32_exit(1)
+						vin32_exit(exit_failure)
 					}
 				}
 			}
@@ -165,7 +165,7 @@ fn disasm(entry_point_address u32, code_size u32, code_part []u8, mut opcodes []
 					{
 						println_error("Invalid or unrecognized ModR/M byte!")
 						println_debug(opcodes.str())
-						vin32_exit(1)
+						vin32_exit(exit_failure)
 					}
 				}
 			}
@@ -173,7 +173,7 @@ fn disasm(entry_point_address u32, code_size u32, code_part []u8, mut opcodes []
 			{
 				println_error("Invalid or unrecognized opcode!")
 				println_debug(opcodes[..].str())
-				vin32_exit(1)
+				vin32_exit(exit_failure)
 			}
 		}
 

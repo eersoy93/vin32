@@ -13,13 +13,13 @@ fn main()
 	}
 	else
 	{
-		println_information("Running Vin32...")  // Under construction!!!
+		println_information("Running Vin32...")
 
 		exe_path := os.args[1]
 		exe_filename := os.file_name(exe_path)
 		exe_contents := os.read_file(exe_path) or {
 			println_error("The contents of the exe couldn't read!")
-			vin32_exit(1)
+			vin32_exit(exit_failure)
 			return
 		}
 
@@ -28,6 +28,6 @@ fn main()
 		exe_result := run_exe(exe_contents)
 		println_information("${exe_filename} returns ${exe_result} value!")
 
-		vin32_exit(0)
+		vin32_exit(exit_success)
 	}
 }
