@@ -1,0 +1,15 @@
+# Binaries for programs and plugins
+main
+vin32
+*.exe
+*.exe~
+*.so
+*.dylib
+*.dll
+vls.log
+
+# Test directory that contains executable examples
+test
+
+# Vin32 logging file (I have testing Vin32 with tee on Linux.)
+vin32.log
