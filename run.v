@@ -25,7 +25,7 @@ fn run_exe(exe_contents string) int
 	// Parse import directories on the EXE exe_memory
 	import_directories_address := int(pe32_optional_header.import_table.address)
 	mut pe32_import_descriptors := []PE32_IMPORT_DESCRIPTOR{}
-	for i in 0..32767  // A hardcoded arbitrary big number
+	for i in 0..(max_int)
 	{
 		pe32_import_descriptor := PE32_IMPORT_DESCRIPTOR
 			{
