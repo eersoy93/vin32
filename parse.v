@@ -1,45 +1,48 @@
 module main
 
+import encoding.binary
+
 // For 32-bit PE exe files only currently
-fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIONAL_HEADER, []PE32_SECTION_HEADER, u16, int)
+fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIONAL_HEADER, []PE32_SECTION_HEADER, u32, int)
 {
+	exe_contents_bytes := exe_contents.bytes()
 	pe32_dos_header := PE32_DOS_HEADER
 	{
-		magic_number:                   u16(exe_contents[0..2].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		last_page_of_file_bytes:        u16(exe_contents[2..4].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		pages_in_file:                  u16(exe_contents[4..6].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		relocations:                    u16(exe_contents[6..8].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		size_of_header_in_paragraphs:   u16(exe_contents[8..10].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		extra_paragraphs_needed_min:    u16(exe_contents[10..12].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		extra_paragraphs_needed_max:    u16(exe_contents[12..14].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		initial_relative_ss_value:      u16(exe_contents[14..16].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		initial_sp_value:               u16(exe_contents[16..18].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		checksum:                       u16(exe_contents[18..20].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		initial_ip_value:               u16(exe_contents[20..22].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		initial_relative_cs_value:      u16(exe_contents[22..24].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		relocation_table_file_address:  u16(exe_contents[24..26].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		overlay_number:                 u16(exe_contents[26..28].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+		magic_number:                   binary.little_endian_u16(exe_contents_bytes[0..2])
+		last_page_of_file_bytes:        binary.little_endian_u16(exe_contents_bytes[2..4])
+		pages_in_file:                  binary.little_endian_u16(exe_contents_bytes[4..6])
+		relocations:                    binary.little_endian_u16(exe_contents_bytes[6..8])
+		size_of_header_in_paragraphs:   binary.little_endian_u16(exe_contents_bytes[8..10])
+		extra_paragraphs_needed_min:    binary.little_endian_u16(exe_contents_bytes[10..12])
+		extra_paragraphs_needed_max:    binary.little_endian_u16(exe_contents_bytes[12..14])
+		initial_relative_ss_value:      binary.little_endian_u16(exe_contents_bytes[14..16])
+		initial_sp_value:               binary.little_endian_u16(exe_contents_bytes[16..18])
+		checksum:                       binary.little_endian_u16(exe_contents_bytes[18..20])
+		initial_ip_value:               binary.little_endian_u16(exe_contents_bytes[20..22])
+		initial_relative_cs_value:      binary.little_endian_u16(exe_contents_bytes[22..24])
+		relocation_table_file_address:  binary.little_endian_u16(exe_contents_bytes[24..26])
+		overlay_number:                 binary.little_endian_u16(exe_contents_bytes[26..28])
 		reserved_words:                 [
-		                                u16(exe_contents[28..30].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[30..32].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[32..34].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[34..36].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+		                                binary.little_endian_u16(exe_contents_bytes[28..30]),
+		                                binary.little_endian_u16(exe_contents_bytes[30..32]),
+		                                binary.little_endian_u16(exe_contents_bytes[32..34]),
+		                                binary.little_endian_u16(exe_contents_bytes[34..36]),
 		                                ]!
-		oem_identifier:                 u16(exe_contents[36..38].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-		oem_information:                u16(exe_contents[38..40].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+		oem_identifier:                 binary.little_endian_u16(exe_contents_bytes[36..38])
+		oem_information:                binary.little_endian_u16(exe_contents_bytes[38..40])
 		reserved_words_2:               [
-		                                u16(exe_contents[40..42].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[42..44].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[44..46].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[46..48].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[48..50].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[50..52].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[52..54].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[54..56].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[56..58].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) }),
-		                                u16(exe_contents[58..60].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+		                                binary.little_endian_u16(exe_contents_bytes[40..42]),
+		                                binary.little_endian_u16(exe_contents_bytes[42..44]),
+		                                binary.little_endian_u16(exe_contents_bytes[44..46]),
+		                                binary.little_endian_u16(exe_contents_bytes[46..48]),
+		                                binary.little_endian_u16(exe_contents_bytes[48..50]),
+		                                binary.little_endian_u16(exe_contents_bytes[50..52]),
+		                                binary.little_endian_u16(exe_contents_bytes[52..54]),
+		                                binary.little_endian_u16(exe_contents_bytes[54..56]),
+		                                binary.little_endian_u16(exe_contents_bytes[56..58]),
+		                                binary.little_endian_u16(exe_contents_bytes[58..60]),
 		                                ]!
-		pointer_to_pe_header:           u16(exe_contents[60..64].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+		pointer_to_pe_header:           binary.little_endian_u32(exe_contents_bytes[60..64])
 	}
 
 	pe_header_pointer := pe32_dos_header.pointer_to_pe_header

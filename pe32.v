@@ -30,7 +30,7 @@ struct PE32_DOS_HEADER
 	oem_identifier                   u16
 	oem_information                  u16
 	reserved_words_2             [10]u16
-	pointer_to_pe_header             u16
+	pointer_to_pe_header             u32
 }
 
 struct PE32_FILE_HEADER
