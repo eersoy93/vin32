@@ -1,5 +1,7 @@
 module main
 
+import encoding.binary
+
 fn disasm(entry_point_address u32, code_size u32, code_part []u8, mut opcodes []string) {
 	mut current_point_offset := u32(0)
 	for current_point_offset < code_size
@@ -156,7 +158,7 @@ fn disasm(entry_point_address u32, code_size u32, code_part []u8, mut opcodes []
 					// SUB ESP, <immediate word value>
 					0xEC
 					{
-						value_imm := u16(code_part[(current_point_offset + 2)..(current_point_offset + 4)].reverse().hex().parse_uint(10, 0) or { panic(panic_text) })
+						value_imm := binary.little_endian_u16(code_part[(current_point_offset + 2)..(current_point_offset + 4)])
 						asmstr := "SUB ESP, 0x${value_imm}"
 				        println_debug("    ${asmstr}")
 				        opcodes << asmstr

@@ -1,11 +1,10 @@
 module main
 
+import encoding.binary
 import term
 
 const exit_success = 0
 const exit_failure = 1
-
-const panic_text = "Invalid unsigned integer parsing!"
 
 fn print_imports(pe32_import_descriptors []PE32_IMPORT_DESCRIPTOR, exe_memory []u8, pe32_optional_header PE32_OPTIONAL_HEADER)
 {
@@ -24,7 +23,7 @@ fn print_imports(pe32_import_descriptors []PE32_IMPORT_DESCRIPTOR, exe_memory []
 
 		for j in 0..4096
 		{
-			import_address := u32(exe_memory[(pe32_import_descriptor.first_thunk + 4 * j)..(pe32_import_descriptor.first_thunk + 4 * j + 4)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+			import_address := binary.little_endian_u32(exe_memory[(pe32_import_descriptor.first_thunk + 4 * j)..(pe32_import_descriptor.first_thunk + 4 * j + 4)])
 			if import_address == 0
 			{
 				break
