@@ -178,41 +178,41 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 	{ len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
 		{
 			name:                   [
-			                        u8(exe_contents[(pe_header_pointer + 40 * index + 248)..(pe_header_pointer + 40 * index + 249)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-			                        u8(exe_contents[(pe_header_pointer + 40 * index + 249)..(pe_header_pointer + 40 * index + 250)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-									u8(exe_contents[(pe_header_pointer + 40 * index + 250)..(pe_header_pointer + 40 * index + 251)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-			                        u8(exe_contents[(pe_header_pointer + 40 * index + 251)..(pe_header_pointer + 40 * index + 252)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-									u8(exe_contents[(pe_header_pointer + 40 * index + 252)..(pe_header_pointer + 40 * index + 253)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-			                        u8(exe_contents[(pe_header_pointer + 40 * index + 253)..(pe_header_pointer + 40 * index + 254)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-									u8(exe_contents[(pe_header_pointer + 40 * index + 254)..(pe_header_pointer + 40 * index + 255)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) }),
-			                        u8(exe_contents[(pe_header_pointer + 40 * index + 255)..(pe_header_pointer + 40 * index + 256)].bytes().hex().parse_uint(16, 0) or { panic(panic_text) })
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 248)..(pe_header_pointer + 40 * index + 249)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 249)..(pe_header_pointer + 40 * index + 250)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 250)..(pe_header_pointer + 40 * index + 251)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 251)..(pe_header_pointer + 40 * index + 252)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 252)..(pe_header_pointer + 40 * index + 253)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 253)..(pe_header_pointer + 40 * index + 254)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 254)..(pe_header_pointer + 40 * index + 255)][0],
+			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 255)..(pe_header_pointer + 40 * index + 256)][0]
 			                        ]!
-			virtual_size:           u32(exe_contents[(pe_header_pointer + 40 * index + 256)..(pe_header_pointer + 40 * index + 260)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			virtual_address:        u32(exe_contents[(pe_header_pointer + 40 * index + 260)..(pe_header_pointer + 40 * index + 264)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			sizeof_raw_data:        u32(exe_contents[(pe_header_pointer + 40 * index + 264)..(pe_header_pointer + 40 * index + 268)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			ptr_to_raw_data:        u32(exe_contents[(pe_header_pointer + 40 * index + 268)..(pe_header_pointer + 40 * index + 272)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			ptr_to_relocations:     u32(exe_contents[(pe_header_pointer + 40 * index + 272)..(pe_header_pointer + 40 * index + 276)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			ptr_to_line_numbers:    u32(exe_contents[(pe_header_pointer + 40 * index + 276)..(pe_header_pointer + 40 * index + 280)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			number_of_relocations:  u16(exe_contents[(pe_header_pointer + 40 * index + 280)..(pe_header_pointer + 40 * index + 282)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			number_of_line_numbers: u16(exe_contents[(pe_header_pointer + 40 * index + 282)..(pe_header_pointer + 40 * index + 284)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-			characteristics:        u32(exe_contents[(pe_header_pointer + 40 * index + 284)..(pe_header_pointer + 40 * index + 288)].bytes().reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+			virtual_size:           binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 256)..(pe_header_pointer + 40 * index + 260)])
+			virtual_address:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 260)..(pe_header_pointer + 40 * index + 264)])
+			sizeof_raw_data:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 264)..(pe_header_pointer + 40 * index + 268)])
+			ptr_to_raw_data:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 268)..(pe_header_pointer + 40 * index + 272)])
+			ptr_to_relocations:     binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 272)..(pe_header_pointer + 40 * index + 276)])
+			ptr_to_line_numbers:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 276)..(pe_header_pointer + 40 * index + 280)])
+			number_of_relocations:  binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 40 * index + 280)..(pe_header_pointer + 40 * index + 282)])
+			number_of_line_numbers: binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 40 * index + 282)..(pe_header_pointer + 40 * index + 284)])
+			characteristics:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 284)..(pe_header_pointer + 40 * index + 288)])
 		}
 	}
 
 	return pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers, pe_header_pointer, exe_sections_count
 }
 
-fn parse_imports(exe_memory  []u8, import_directories_address int, mut pe32_import_descriptors []PE32_IMPORT_DESCRIPTOR)
+fn parse_imports(exe_memory []u8, import_directories_address int, mut pe32_import_descriptors []PE32_IMPORT_DESCRIPTOR)
 {
 	for i in 0..(max_int)
 	{
 		pe32_import_descriptor := PE32_IMPORT_DESCRIPTOR
 			{
-				original_first_thunk: u32(exe_memory[(import_directories_address + i * 20)..(import_directories_address + i * 20 + 4)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				time_date_stamp:      u32(exe_memory[(import_directories_address + i * 20 + 4)..(import_directories_address + i * 20 + 8)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				forwarder:            u32(exe_memory[(import_directories_address + i * 20 + 8)..(import_directories_address + i * 20 + 12)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				rva_of_name:          u32(exe_memory[(import_directories_address + i * 20 + 12)..(import_directories_address + i * 20 + 16)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
-				first_thunk:          u32(exe_memory[(import_directories_address + i * 20 + 16)..(import_directories_address + i * 20 + 20)].reverse().hex().parse_uint(16, 0) or { panic(panic_text) })
+				original_first_thunk: binary.little_endian_u32(exe_memory[(import_directories_address + i * 20)..(import_directories_address + i * 20 + 4)])
+				time_date_stamp:      binary.little_endian_u32(exe_memory[(import_directories_address + i * 20 + 4)..(import_directories_address + i * 20 + 8)])
+				forwarder:            binary.little_endian_u32(exe_memory[(import_directories_address + i * 20 + 8)..(import_directories_address + i * 20 + 12)])
+				rva_of_name:          binary.little_endian_u32(exe_memory[(import_directories_address + i * 20 + 12)..(import_directories_address + i * 20 + 16)])
+				first_thunk:          binary.little_endian_u32(exe_memory[(import_directories_address + i * 20 + 16)..(import_directories_address + i * 20 + 20)])
 			}
 		if pe32_import_descriptor.original_first_thunk == u32(0x00000000)
 		{
