@@ -35,8 +35,12 @@ fn run_exe(exe_contents string) int
 	code_size := pe32_optional_header.code_size
 	code_part := exe_memory[(entry_point_address)..(entry_point_address + code_size)].clone()
 
+	// Initialize the CPU
+	cpu_regs := init_cpu()
+
+	// Execute the EXE code
 	println_debug("Executing:")
-	execute(entry_point_address, code_size, code_part)
+	execute(entry_point_address, code_size, code_part, exe_memory, cpu_regs)
 
 	// TODO: To be continued!
 
