@@ -30,14 +30,13 @@ fn run_exe(exe_contents string) int
 	// Print import DLL names and the APIs for debugging
 	print_imports(pe32_import_descriptors, exe_memory, pe32_optional_header)
 
-	// Disassemble the EXE code from entry point
+	// Separate opcodes the EXE code from entry point
 	entry_point_address := pe32_optional_header.entry_point
 	code_size := pe32_optional_header.code_size
 	code_part := exe_memory[(entry_point_address)..(entry_point_address + code_size)].clone()
-	mut opcodes := []string{}
 
-	println_debug("Codes to be executed:")
-	disasm(entry_point_address, code_size, code_part, mut &opcodes)
+	println_debug("Executing:")
+	execute(entry_point_address, code_size, code_part)
 
 	// TODO: To be continued!
 
