@@ -425,14 +425,14 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 					// MOV [ESP + offset], EAX
 					[u8(0x44), 0x24]
 					{
-						opcode_size = 8
-						asmstr := 'MOV [ESP + 0x${code_part[current_point_offset + 3].hex()}], EaX'
+						opcode_size = 4
+						asmstr := 'MOV [ESP + 0x${code_part[current_point_offset + 3].hex()}], EAX'
 						println_debug('    ${asmstr}')
 					}
 					// MOV [ESP + offset], EBX
 					[u8(0x5C), 0x24]
 					{
-						opcode_size = 8
+						opcode_size = 4
 						asmstr := 'MOV [ESP + 0x${code_part[current_point_offset + 3].hex()}], EBX'
 						println_debug('    ${asmstr}')
 					}
