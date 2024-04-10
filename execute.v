@@ -67,6 +67,78 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 					}
 				}
 			}
+			// ADD Gb, Eb
+			0x02
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					// ADD BL, [EBX]
+					0x1B
+					{
+						asmstr := "ADD BL, [EBX]"
+						println_debug("    ${asmstr}")
+					}
+					// ADD DH, [ESI]
+					0x36
+					{
+						asmstr := "ADD DH, [ESI]"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
+			}
+			// ADD Gv, Ev
+			0x03
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					// ADD EBX, EBX
+					0xDB
+					{
+						asmstr := "ADD EBX, EBX"
+						println_debug("    ${asmstr}")
+					}
+					// ADD EBX, ESI
+					0xDE
+					{
+						asmstr := "ADD EBX, ESI"
+						println_debug("    ${asmstr}")
+					}
+					// ADD ESI, ESI
+					0xF6
+					{
+						asmstr := "ADD ESI, ESI"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
+			}
+			// ADD AL, Ib
+			0x04
+			{
+				opcode_size = 2
+				value_imm := code_part[current_point_offset + 1].hex()
+				asmstr := "ADD AL, 0x${value_imm}"
+				println_debug("    ${asmstr}")
+			}
+			// ADD AX, Iv
+			0x05
+			{
+				opcode_size = 3
+				value_imm := binary.little_endian_u16(code_part[(current_point_offset + 1)..(current_point_offset + 3)])
+				asmstr := "ADD AX, 0x${value_imm}"
+				println_debug("    ${asmstr}")
+			}
 			// PUSH ES
 			0x06
 			{
