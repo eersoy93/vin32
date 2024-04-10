@@ -14,12 +14,14 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 			// PUSH ES
 			0x06
 			{
+				opcode_size = 1
 				asmstr := "PUSH ES"
 				println_debug("    ${asmstr}")
 			}
 			// POP ES
 			0x07
 			{
+				opcode_size = 1
 				asmstr := "POP ES"
 				println_debug("    ${asmstr}")
 			}
@@ -127,7 +129,23 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 			0x0C
 			{
 				opcode_size = 2
-				asmstr := "OR AL, 0x${code_part[current_point_offset + 1].hex()}"
+				value_imm := binary.little_endian_u16(code_part[current_point_offset + 1])
+				asmstr := "OR AL, 0x${value_imm}"
+				println_debug("    ${asmstr}")
+			}
+			// OR AX, Iv
+			0x0D
+			{
+				opcode_size = 3
+				value_imm := binary.little_endian_u16(code_part[(current_point_offset + 1)..(current_point_offset + 3)])
+				asmstr := "OR AX, 0x${value_imm}"
+				println_debug("    ${asmstr}")
+			}
+			// PUSH CS
+			0x0E
+			{
+				opcode_size = 1
+				asmstr := "PUSH CS"
 				println_debug("    ${asmstr}")
 			}
 			// XOR Gv, Ev
