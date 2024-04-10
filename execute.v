@@ -292,7 +292,7 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 					0xF6
 					{
 						asmstr := "XOR ESI, ESI"
-						println_debug("....${asmstr}")
+						println_debug("    ${asmstr}")
 					}
 					else
 					{
@@ -449,6 +449,26 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 				opcode_size = 1
 				asmstr := "NOP"
 				println_debug("    ${asmstr}")
+			}
+			// MOV Ev, Iv
+			0xC7
+			{
+				match code_part[current_point_offset + 1..current_point_offset + 3]
+				{
+					// MOV [ESP + offset], Iv
+					[u8(0x44), 0x24]
+					{
+						opcode_size = 8
+						value_imm := binary.little_endian_u16(code_part[(current_point_offset + 2)..(current_point_offset + 4)])
+						asmstr := "MOV [ESP + 0x${code_part[current_point_offset + 5].hex()}], 0x${value_imm}"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
 			}
 			else
 			{
