@@ -276,18 +276,18 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 			{
 				match code_part[current_point_offset + 1..current_point_offset + 3]
 				{
-					// MOV DWORD PTR [ESP + offset], EAX
+					// MOV [ESP + offset], EAX
 					[u8(0x44), 0x24]
 					{
 						opcode_size = 8
-						asmstr := 'MOV DWORD PTR [ESP + 0x${code_part[current_point_offset + 3].hex()}], EaX'
+						asmstr := 'MOV [ESP + 0x${code_part[current_point_offset + 3].hex()}], EaX'
 						println_debug('    ${asmstr}')
 					}
-					// MOV DWORD PTR [ESP + offset], EBX
+					// MOV [ESP + offset], EBX
 					[u8(0x5C), 0x24]
 					{
 						opcode_size = 8
-						asmstr := 'MOV DWORD PTR [ESP + 0x${code_part[current_point_offset + 3].hex()}], EBX'
+						asmstr := 'MOV [ESP + 0x${code_part[current_point_offset + 3].hex()}], EBX'
 						println_debug('    ${asmstr}')
 					}
 					else
