@@ -5,6 +5,7 @@ import encoding.binary
 // FIXME: The executing opcodes NOT yet implemented!
 
 fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []u8, cpu_regs &CpuRegs) {
+	println_warning("The executing opcodes NOT yet implemented!")
 	mut current_point_offset := u32(0)
 	for current_point_offset < code_size
 	{
