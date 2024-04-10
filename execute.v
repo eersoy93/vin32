@@ -127,11 +127,8 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 			0x0C
 			{
 				opcode_size = 2
-				match code_part[current_point_offset + 1]
-				{
-					asmstr := "OR AL, 0x${code_part[current_point_offset + 1].hex()}"
-					println_debug("    ${asmstr}")
-				}
+				asmstr := "OR AL, 0x${code_part[current_point_offset + 1].hex()}"
+				println_debug("    ${asmstr}")
 			}
 			// XOR Gv, Ev
 			0x33
