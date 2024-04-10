@@ -403,10 +403,10 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 				opcode_size = 6
 				match code_part[current_point_offset + 1]
 				{
-					// SUB ESP, <immediate word value>
+					// SUB ESP, Iv
 					0xEC
 					{
-						value_imm := binary.little_endian_u16(code_part[(current_point_offset + 2)..(current_point_offset + 4)])
+						value_imm := binary.little_endian_u16(code_part[(current_point_offset + 2)..(current_point_offset + 4)]).hex()
 						asmstr := "SUB ESP, 0x${value_imm}"
 				        println_debug("    ${asmstr}")
 					}
