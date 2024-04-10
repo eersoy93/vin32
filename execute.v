@@ -11,6 +11,128 @@ fn execute(entry_point_address u32, code_size u32, code_part []u8, exe_memory []
 		mut opcode_size := u8(1)
 		match code_part[current_point_offset]
 		{
+			// PUSH ES
+			0x06
+			{
+				asmstr := "PUSH ES"
+				println_debug("    ${asmstr}")
+			}
+			// POP ES
+			0x07
+			{
+				asmstr := "POP ES"
+				println_debug("    ${asmstr}")
+			}
+			// OR Eb, Gb
+			0x08
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					// OR [EBX], BL
+					0x1B
+					{
+						asmstr := "OR [EBX], BL"
+						println_debug("    ${asmstr}")
+					}
+					// OR [ESI], DH
+					0x36
+					{
+						asmstr := "OR [ESI], DH"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
+			}
+			// OR Ev, Gv
+			0x09
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					// OR EBX, EBX
+					0xDB
+					{
+						asmstr := "OR EBX, EBX"
+						println_debug("    ${asmstr}")
+					}
+					// OR ESI, ESI
+					0xF6
+					{
+						asmstr := "OR ESI, ESI"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
+			}
+			// OR Gb, Eb
+			0x0A
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					// OR BL, [EBX]
+					0x1B
+					{
+						asmstr := "OR BL, [EBX]"
+						println_debug("    ${asmstr}")
+					}
+					// OR DH, [ESI]
+					0x36
+					{
+						asmstr := "OR DH, [ESI]"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
+			}
+			// OR Gv, Ev
+			0x0B
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					// OR EBX, EBX
+					0xDB
+					{
+						asmstr := "OR EBX, EBX"
+						println_debug("    ${asmstr}")
+					}
+					// OR ESI, ESI
+					0xF6
+					{
+						asmstr := "OR ESI, ESI"
+						println_debug("    ${asmstr}")
+					}
+					else
+					{
+						println_error("Invalid or unrecognized ModR/M byte!")
+						vin32_exit(exit_failure)
+					}
+				}
+			}
+			// OR AL, Ib
+			0x0C
+			{
+				opcode_size = 2
+				match code_part[current_point_offset + 1]
+				{
+					asmstr := "OR AL, 0x${code_part[current_point_offset + 1].hex()}"
+					println_debug("    ${asmstr}")
+				}
+			}
 			// XOR Gv, Ev
 			0x33
 			{
