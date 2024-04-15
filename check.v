@@ -53,6 +53,8 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	if pe32_file_header.optional_header_size != sizeof(pe32_optional_header)
 	{
 		println_warning("SizeOfOptionalHeader doesn't equal with size of the optional header.")
+		println_warning("SizeOfOptionalHeader: ${pe32_file_header.optional_header_size}")
+		println_warning("Size of the optional header: ${sizeof(pe32_optional_header)}")
 	}
 
 	// Check whether image is PE32 image, not PE32+ or other
