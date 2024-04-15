@@ -77,91 +77,17 @@ struct PE32_OPTIONAL_HEADER
 	size_of_heap_commit        u32
 	loader_flags               u32
 	rvas_and_sizes_number      u32
-	export_table               struct
-	{
-		address        u32
-		size           u32
-	}
-	import_table               struct
-	{
-		address        u32
-		size           u32
-	}
-	resource_table             struct
-	{
-		address        u32
-		size           u32
-	}
-	exception_table            struct
-	{
-		address        u32
-		size           u32
-	}
-	certificate_table          struct
-	{
-		address        u32
-		size           u32
-	}
-	base_relocation_table      struct
-	{
-		address        u32
-		size           u32
-	}
-	debug_table                struct
-	{
-		address        u32
-		size           u32
-	}
-	architecture_specific_data struct
-	{
-		address        u32
-		size           u32
-	}
-	rva_of_global_pointer      struct
-	{
-		address        u32
-		size           u32
-	}
-	tls_table                  struct
-	{
-		address        u32
-		size           u32
-	}
-	load_config_table          struct
-	{
-		address        u32
-		size           u32
-	}
-	bound_import_table         struct
-	{
-		address        u32
-		size           u32
-	}
-	import_address_table       struct
-	{
-		address        u32
-		size           u32
-	}
-	delay_import_descriptor    struct
-	{
-		address        u32
-		size           u32
-	}
-	clr_runtime_header         struct
-	{
-		address        u32
-		size           u32
-	}
-	reserved                   struct
-	{
-		address        u32
-		size           u32
-	}
+}
+
+struct PE32_IMPORT_TABLE
+{
+	address u32
+	size    u32
 }
 
 struct PE32_SECTION_HEADER
 {
-	name                   [8]u8
+	name                      []u8
 	virtual_size              u32
 	virtual_address           u32
 	sizeof_raw_data           u32

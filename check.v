@@ -76,7 +76,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	// Debugly print image section names
 	for i, pe32_section_header in pe32_section_headers
 	{
-		name := pe32_section_header.name[..]
+		name := pe32_section_header.name
 		println_debug("The EXE section name #${i + 1} is: ${name.bytestr()}")
 	}
 

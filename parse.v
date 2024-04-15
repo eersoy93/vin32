@@ -3,7 +3,7 @@ module main
 import encoding.binary
 
 // For 32-bit PE exe files only currently
-fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIONAL_HEADER, []PE32_SECTION_HEADER, u32, int)
+fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIONAL_HEADER, PE32_IMPORT_TABLE, []PE32_SECTION_HEADER, u32, int)
 {
 	exe_contents_bytes := exe_contents.bytes()
 	pe32_dos_header := PE32_DOS_HEADER
@@ -62,8 +62,8 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 	pe32_optional_header := PE32_OPTIONAL_HEADER
 	{
 		magic:                      binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 24)..(pe_header_pointer + 26)])
-		linker_version_major:       exe_contents_bytes[(pe_header_pointer + 26)..(pe_header_pointer + 27)][0]
-		linker_version_minor:       exe_contents_bytes[(pe_header_pointer + 27)..(pe_header_pointer + 28)][0]
+		linker_version_major:       exe_contents_bytes[(pe_header_pointer + 26)]
+		linker_version_minor:       exe_contents_bytes[(pe_header_pointer + 27)]
 		code_size:                  binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 28)..(pe_header_pointer + 32)])
 		initialized_data_size:      binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 32)..(pe_header_pointer + 36)])
 		uninitialized_data_size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 36)..(pe_header_pointer + 40)])
@@ -91,86 +91,13 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 		size_of_heap_commit:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 108)..(pe_header_pointer + 112)])
 		loader_flags:               binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 112)..(pe_header_pointer + 116)])
 		rvas_and_sizes_number:      binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 116)..(pe_header_pointer + 120)])
-		export_table:               struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120)..(pe_header_pointer + 124)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 124)..(pe_header_pointer + 128)])
-			}
-		import_table:               struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 128)..(pe_header_pointer + 132)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 132)..(pe_header_pointer + 136)])
-			}
-		resource_table:             struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 136)..(pe_header_pointer + 140)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 140)..(pe_header_pointer + 144)])
-			}
-		exception_table:            struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 144)..(pe_header_pointer + 148)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 148)..(pe_header_pointer + 152)])
-			}
-		certificate_table:          struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 152)..(pe_header_pointer + 156)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 156)..(pe_header_pointer + 160)])
-			}
-		base_relocation_table:      struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 160)..(pe_header_pointer + 164)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 164)..(pe_header_pointer + 168)])
-			}
-		debug_table:                struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 168)..(pe_header_pointer + 172)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 172)..(pe_header_pointer + 176)])
-			}
-		architecture_specific_data: struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 176)..(pe_header_pointer + 180)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 180)..(pe_header_pointer + 184)])
-			}
-		rva_of_global_pointer:      struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 184)..(pe_header_pointer + 188)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 188)..(pe_header_pointer + 192)])
-			}
-		tls_table:                  struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 192)..(pe_header_pointer + 196)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 196)..(pe_header_pointer + 200)])
-			}
-		load_config_table:          struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 200)..(pe_header_pointer + 204)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 204)..(pe_header_pointer + 208)])
-			}
-		bound_import_table:         struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 208)..(pe_header_pointer + 212)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 212)..(pe_header_pointer + 216)])
-			}
-		import_address_table:       struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 216)..(pe_header_pointer + 220)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 220)..(pe_header_pointer + 224)])
-			}
-		delay_import_descriptor:    struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 224)..(pe_header_pointer + 228)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 228)..(pe_header_pointer + 232)])
-			}
-		clr_runtime_header:         struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 232)..(pe_header_pointer + 236)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 236)..(pe_header_pointer + 240)])
-			}
-		reserved:                   struct
-			{
-				address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 240)..(pe_header_pointer + 244)])
-				size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 244)..(pe_header_pointer + 248)])
-			}
+	}
+	rvas_and_sizes_number := pe32_optional_header.rvas_and_sizes_number
+
+	pe32_import_table := PE32_IMPORT_TABLE
+	{
+		address: binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 128)..(pe_header_pointer + 132)])
+		size:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 132)..(pe_header_pointer + 136)])
 	}
 
 	exe_sections_count := int(pe32_file_header.sections_count)
@@ -178,28 +105,28 @@ fn parse_exe(exe_contents string) (PE32_DOS_HEADER, PE32_FILE_HEADER, PE32_OPTIO
 	{ len: exe_sections_count, cap: exe_sections_count, init: PE32_SECTION_HEADER
 		{
 			name:                   [
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 248)..(pe_header_pointer + 40 * index + 249)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 249)..(pe_header_pointer + 40 * index + 250)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 250)..(pe_header_pointer + 40 * index + 251)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 251)..(pe_header_pointer + 40 * index + 252)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 252)..(pe_header_pointer + 40 * index + 253)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 253)..(pe_header_pointer + 40 * index + 254)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 254)..(pe_header_pointer + 40 * index + 255)][0],
-			                        exe_contents_bytes[(pe_header_pointer + 40 * index + 255)..(pe_header_pointer + 40 * index + 256)][0]
-			                        ]!
-			virtual_size:           binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 256)..(pe_header_pointer + 40 * index + 260)])
-			virtual_address:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 260)..(pe_header_pointer + 40 * index + 264)])
-			sizeof_raw_data:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 264)..(pe_header_pointer + 40 * index + 268)])
-			ptr_to_raw_data:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 268)..(pe_header_pointer + 40 * index + 272)])
-			ptr_to_relocations:     binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 272)..(pe_header_pointer + 40 * index + 276)])
-			ptr_to_line_numbers:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 276)..(pe_header_pointer + 40 * index + 280)])
-			number_of_relocations:  binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 40 * index + 280)..(pe_header_pointer + 40 * index + 282)])
-			number_of_line_numbers: binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 40 * index + 282)..(pe_header_pointer + 40 * index + 284)])
-			characteristics:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 40 * index + 284)..(pe_header_pointer + 40 * index + 288)])
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 0)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 1)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 2)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 3)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 4)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 5)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 6)]),
+										u8(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 7)])
+									]
+			virtual_size:           binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 8)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 12)])
+			virtual_address:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 12)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 16)])
+			sizeof_raw_data:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 16)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 20)])
+			ptr_to_raw_data:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 20)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 24)])
+			ptr_to_relocations:     binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 24)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 28)])
+			ptr_to_line_numbers:    binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 28)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 32)])
+			number_of_relocations:  binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 32)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 34)])
+			number_of_line_numbers: binary.little_endian_u16(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 34)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 36)])
+			characteristics:        binary.little_endian_u32(exe_contents_bytes[(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 36)..(pe_header_pointer + 120 + index * 40 + rvas_and_sizes_number * 8 + 40)])
 		}
 	}
 
-	return pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers, pe_header_pointer, exe_sections_count
+	return pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_import_table, pe32_section_headers, pe_header_pointer, exe_sections_count
 }
 
 fn parse_imports(exe_memory []u8, import_directories_address int, mut pe32_import_descriptors []PE32_IMPORT_DESCRIPTOR)

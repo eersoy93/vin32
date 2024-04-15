@@ -3,7 +3,7 @@ module main
 fn run_exe(exe_contents string) int
 {
 	// Classify EXE contents
-	pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers, pe_header_pointer, exe_sections_count := parse_exe(exe_contents)
+	pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_import_table, pe32_section_headers, pe_header_pointer, exe_sections_count := parse_exe(exe_contents)
 
 	// Check some classified EXE content
 	check_exe(pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers)
@@ -20,10 +20,10 @@ fn run_exe(exe_contents string) int
 	}
 
 	// Load headers and sections to EXE exe_memory
-	load_exe(exe_contents, mut &exe_memory, pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_section_headers, pe_header_pointer, exe_sections_count)
+	load_exe(exe_contents, mut &exe_memory, pe32_dos_header, pe32_file_header, pe32_optional_header, pe32_import_table, pe32_section_headers, pe_header_pointer, exe_sections_count)
 
 	// Parse import directories on the EXE exe_memory
-	import_directories_address := int(pe32_optional_header.import_table.address)
+	import_directories_address := int(pe32_import_table.address)
 	mut pe32_import_descriptors := []PE32_IMPORT_DESCRIPTOR{}
 	parse_imports(exe_memory, import_directories_address, mut &pe32_import_descriptors)
 
