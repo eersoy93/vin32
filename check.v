@@ -50,7 +50,7 @@ fn check_exe(pe32_dos_header PE32_DOS_HEADER, pe32_file_header PE32_FILE_HEADER,
 	}
 
 	// Check SizeOfOptionalHeader equals sizeof(PE32_OPTIONAL_HEADER of the EXE)
-	if pe32_file_header.optional_header_size != sizeof(pe32_optional_header)
+	if pe32_file_header.optional_header_size != sizeof(pe32_optional_header) + pe32_optional_header.rvas_and_sizes_number * 8
 	{
 		println_warning("SizeOfOptionalHeader doesn't equal with size of the optional header.")
 		println_warning("SizeOfOptionalHeader: ${pe32_file_header.optional_header_size}")
